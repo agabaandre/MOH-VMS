@@ -1,9 +1,7 @@
 <nav class="sidebar sidebar-bunker sidebar-sticky overflow-hidden">
     <div class="sidebar-header">
         <a href="{{ route('home') }}" class="sidebar-brand">
-            <img class="sidebar-logo-lg"
-                src="{{ setting('site.logo_black', admin_asset('img/sidebar-logo.png'), true) }}">
-            <img class="sidebar-logo-sm" src="{{ setting('site.favicon', admin_asset('img/favicon.png'), true) }}">
+            <h2>{{ strtoupper(localize(config('app.name'))) }}</h2>
         </a>
     </div>
 
