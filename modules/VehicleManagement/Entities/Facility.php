@@ -6,13 +6,13 @@ use App\Traits\FormatTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RTAOffice extends Model
+class Facility extends Model
 {
     use FormatTimestamps,
         HasFactory;
 
     // set table name
-    protected $table = 'rta_offices';
+    protected $table = 'facilitys';
 
     // The mass assignable attributes.
     protected $fillable = [

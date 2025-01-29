@@ -22,7 +22,6 @@ class EmployeeFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'payroll_type' => $this->faker->randomElement(['monthly', 'hourly']),
             'department_id' => $this->faker->numberBetween(1, 10),
             'position_id' => $this->faker->numberBetween(1, 10),
             'nid' => $this->faker->numberBetween(1000000000, 9999999999),
@@ -35,8 +34,6 @@ class EmployeeFactory extends Factory
             'dob' => $this->faker->date(),
             'working_slot_from' => $this->faker->time(),
             'working_slot_to' => $this->faker->time(),
-            'father_name' => $this->faker->name,
-            'mother_name' => $this->faker->name,
             'present_contact' => $this->faker->phoneNumber,
             'present_address' => $this->faker->address,
             'permanent_contact' => $this->faker->phoneNumber,

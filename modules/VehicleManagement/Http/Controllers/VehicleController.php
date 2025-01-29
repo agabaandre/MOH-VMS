@@ -8,7 +8,7 @@ use Modules\Employee\Entities\Department;
 use Modules\Employee\Entities\Driver;
 use Modules\Inventory\Entities\Vendor;
 use Modules\VehicleManagement\DataTables\VehicleDataTable;
-use Modules\VehicleManagement\Entities\RTAOffice;
+use Modules\VehicleManagement\Entities\Facility;
 use Modules\VehicleManagement\Entities\Vehicle;
 use Modules\VehicleManagement\Entities\VehicleOwnershipType;
 use Modules\VehicleManagement\Entities\VehicleType;
@@ -62,7 +62,7 @@ class VehicleController extends Controller
             'ownerships' => VehicleOwnershipType::where('is_active', true)->get(),
             'vendors' => Vendor::where('is_active', true)->get(),
             'drivers' => Driver::where('is_active', true)->get(),
-            'circle_offices' => RTAOffice::where('is_active', true)->get(),
+            'circle_offices' => Facility::where('is_active', true)->get(),
         ])->render();
     }
 
@@ -104,7 +104,7 @@ class VehicleController extends Controller
             'ownerships' => VehicleOwnershipType::where('is_active', true)->get(),
             'vendors' => Vendor::where('is_active', true)->get(),
             'drivers' => Driver::where('is_active', true)->get(),
-            'circle_offices' => RTAOffice::where('is_active', true)->get(),
+            'circle_offices' => Facility::where('is_active', true)->get(),
             'item' => $vehicle,
         ])->render();
     }

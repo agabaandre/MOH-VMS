@@ -88,7 +88,7 @@
                 @if (module_active('VehicleManagement') &&
                         (can('vehicle_management') ||
                             can('vehicle_type_management') ||
-                            can('vehicle_rta_office_management') ||
+                            can('vehicle_facility_management') ||
                             can('vehicle_ownership_type_management') ||
                             can('document_type_management') ||
                             can('legal_document_management')))
@@ -123,9 +123,9 @@
                                 {{ localize('Vehicle Type') }}
                             </x-admin.nav-link>
                         @endcan
-                        @can('vehicle_rta_office_management')
+                        @can('vehicle_facility_management')
                             <x-admin.nav-link href="{{ route('admin.vehicle.rta-office.index') }}">
-                                {{ localize('RTA Office') }}
+                                {{ localize('Facility') }}
                             </x-admin.nav-link>
                         @endcan
                         @can('vehicle_ownership_type_management')

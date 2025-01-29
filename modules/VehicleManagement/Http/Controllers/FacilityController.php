@@ -4,10 +4,10 @@ namespace Modules\VehicleManagement\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\VehicleManagement\DataTables\RTAOfficeDataTable;
-use Modules\VehicleManagement\Entities\RTAOffice;
+use Modules\VehicleManagement\DataTables\FacilityDataTable;
+use Modules\VehicleManagement\Entities\Facility;
 
-class RTAOfficeController extends Controller
+class FacilityController extends Controller
 {
     /**
      * Constructor for the controller.
@@ -16,7 +16,7 @@ class RTAOfficeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['auth', 'verified', 'permission:vehicle_rta_office_management']);
+        $this->middleware(['auth', 'verified', 'permission:vehicle_facility_management']);
         $this->middleware('request:ajax', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
         $this->middleware('strip_scripts_tag')->only(['store', 'update']);
         \cs_set('theme', [
@@ -41,13 +41,13 @@ class RTAOfficeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(RTAOfficeDataTable $dataTable)
+    public function index(FacilityDataTable $dataTable)
     {
         \cs_set('theme', [
             'description' => 'Display a listing of Vehicle office in Database.',
         ]);
 
-        return $dataTable->render('vehiclemanagement::rta_office.index');
+        return $dataTable->render('vehiclemanagement::facility.index');
     }
 
     /**
@@ -57,7 +57,7 @@ class RTAOfficeController extends Controller
      */
     public function create()
     {
-        return view('vehiclemanagement::rta_office.create_edit')->render();
+        return view('vehiclemanagement::facility.create_edit')->render();
     }
 
     /**
@@ -68,11 +68,11 @@ class RTAOfficeController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255|unique:rta_offices,name',
+            'name' => 'required|string|max:255|unique:facilitys,name',
             'description' => 'nullable|string',
             'is_active' => 'required|boolean',
         ]);
-        $item = RTAOffice::create($data);
+        $item = Facility::create($data);
 
         return response()->success($item, localize('Item Created Successfully'), 201);
     }
@@ -82,9 +82,9 @@ class RTAOfficeController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function edit(RTAOffice $office)
+    public function edit(Facility $office)
     {
-        return view('vehiclemanagement::rta_office.create_edit', ['item' => $office])->render();
+        return view('vehiclemanagement::facility.create_edit', ['item' => $office])->render();
     }
 
     /**
@@ -92,10 +92,10 @@ class RTAOfficeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(RTAOffice $office, Request $request)
+    public function update(Facility $office, Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255|unique:rta_offices,name,' . $office->id . ',id',
+            'name' => 'required|string|max:255|unique:facilitys,name,' . $office->id . ',id',
             'description' => 'nullable|string',
             'is_active' => 'required|boolean',
         ]);
@@ -109,7 +109,7 @@ class RTAOfficeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy(RTAOffice $office)
+    public function destroy(Facility $office)
     {
 
         $office->delete();

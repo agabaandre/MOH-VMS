@@ -133,7 +133,6 @@ CREATE TABLE `employees` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `employee_code` varchar(120) DEFAULT NULL,
   `name` varchar(120) NOT NULL,
-  `payroll_type` varchar(120) DEFAULT NULL,
   `department_id` bigint(20) UNSIGNED DEFAULT NULL,
   `position_id` bigint(20) UNSIGNED DEFAULT NULL,
   `nid` varchar(120) DEFAULT NULL,
@@ -142,12 +141,9 @@ CREATE TABLE `employees` (
   `email2` varchar(120) DEFAULT NULL,
   `phone2` varchar(120) DEFAULT NULL,
   `join_date` date DEFAULT NULL,
-  `blood_group` varchar(120) DEFAULT NULL,
   `dob` date DEFAULT NULL,
   `working_slot_from` varchar(120) DEFAULT NULL,
   `working_slot_to` varchar(120) DEFAULT NULL,
-  `father_name` varchar(120) DEFAULT NULL,
-  `mother_name` varchar(120) DEFAULT NULL,
   `present_contact` varchar(120) DEFAULT NULL,
   `present_address` varchar(120) DEFAULT NULL,
   `permanent_contact` varchar(120) DEFAULT NULL,
@@ -537,7 +533,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (27, '2024_04_20_044803_create_vehicle_requisition_types_table', 1),
 (28, '2024_04_20_045000_create_vehicle_maintenance_types_table', 1),
 (29, '2024_04_20_045421_create_fuel_types_table', 1),
-(30, '2024_04_20_045551_create_rta_offices_table', 1),
+(30, '2024_04_20_045551_create_facilitys_table', 1),
 (31, '2024_04_20_052012_create_vehicle_ownership_types_table', 1),
 (32, '2024_04_20_074618_create_vehicle_insurance_companies_table', 1),
 (33, '2024_04_20_074719_create_vehicle_insurance_recurring_periods_table', 1),
@@ -622,7 +618,7 @@ INSERT INTO `permissions` (`id`, `name`, `group`, `guard_name`, `created_at`, `u
 (2, 'vehicle_management', 'Vehicle Management', 'web', '2024-05-09 00:43:45', '2024-05-09 00:43:45'),
 (3, 'vehicle_type_management', 'Vehicle Management', 'web', '2024-05-09 00:43:45', '2024-05-09 00:43:45'),
 (4, 'vehicle_division_management', 'Vehicle Management', 'web', '2024-05-09 00:43:45', '2024-05-09 00:43:45'),
-(5, 'vehicle_rta_office_management', 'Vehicle Management', 'web', '2024-05-09 00:43:45', '2024-05-09 00:43:45'),
+(5, 'vehicle_facility_management', 'Vehicle Management', 'web', '2024-05-09 00:43:45', '2024-05-09 00:43:45'),
 (6, 'vehicle_ownership_type_management', 'Vehicle Management', 'web', '2024-05-09 00:43:45', '2024-05-09 00:43:45'),
 (7, 'document_type_management', 'Vehicle Management', 'web', '2024-05-09 00:43:45', '2024-05-09 00:43:45'),
 (8, 'legal_document_management', 'Vehicle Management', 'web', '2024-05-09 00:43:45', '2024-05-09 00:43:45'),
@@ -850,10 +846,10 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `rta_offices`
+-- Table structure for table `facilitys`
 --
 
-CREATE TABLE `rta_offices` (
+CREATE TABLE `facilitys` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(120) NOT NULL,
   `description` varchar(120) DEFAULT NULL,
@@ -1508,11 +1504,11 @@ ALTER TABLE `role_has_permissions`
   ADD KEY `role_has_permissions_role_id_foreign` (`role_id`);
 
 --
--- Indexes for table `rta_offices`
+-- Indexes for table `facilitys`
 --
-ALTER TABLE `rta_offices`
+ALTER TABLE `facilitys`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `rta_offices_name_unique` (`name`);
+  ADD UNIQUE KEY `facilitys_name_unique` (`name`);
 
 --
 -- Indexes for table `sessions`
@@ -1843,9 +1839,9 @@ ALTER TABLE `roles`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `rta_offices`
+-- AUTO_INCREMENT for table `facilitys`
 --
-ALTER TABLE `rta_offices`
+ALTER TABLE `facilitys`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --

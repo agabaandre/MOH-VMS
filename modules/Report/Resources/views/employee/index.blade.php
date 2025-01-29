@@ -10,33 +10,8 @@
         </x-slot>
         <x-filter-layout>
             <div class="col-sm-12 col-xl-4">
-                <div class="form-group row mb-1">
-                    <label for="emp_type"
-                        class="col-sm-5 col-form-label justify-content-start text-left">@localize('Employee Type')
-                    </label>
-                    <div class="col-sm-7">
-                        <select class="form-control basic-single" name="employee_type" id="emp_types" tabindex="-1"
-                            aria-hidden="true">
-                            <option value="">@localize('Please Select One')</option>
-                            @foreach (config('employee.payroll_types') as $key => $value)
-                                <option value="{{ $value }}">{{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row mb-1">
-                    <label for="blood"
-                        class="col-sm-5 col-form-label justify-content-start text-left">@localize('Blood Group') </label>
-                    <div class="col-sm-7">
-                        <select class="form-control basic-single" name="blood_group" id="shbloodg" tabindex="-1"
-                            aria-hidden="true">
-                            <option value="">@localize('Please Select One')</option>
-                            @foreach (config('employee.blood_groups') as $key => $value)
-                                <option value="{{ $value }}">{{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
+                
+                
 
             </div>
             <div class="col-sm-12 col-xl-4">

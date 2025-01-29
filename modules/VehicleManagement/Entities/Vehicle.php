@@ -55,7 +55,7 @@ class Vehicle extends Model
 
     public function rta_circle_office()
     {
-        return $this->belongsTo(RTAOffice::class);
+        return $this->belongsTo(Facility::class);
     }
 
     public function driver()

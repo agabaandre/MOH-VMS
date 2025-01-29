@@ -14,7 +14,6 @@ class Employee extends Model
     protected $fillable = [
         'employee_code',
         'name',
-        'payroll_type',
         'department_id',
         'position_id',
         'nid',
@@ -27,8 +26,6 @@ class Employee extends Model
         'dob',
         'working_slot_from',
         'working_slot_to',
-        'father_name',
-        'mother_name',
         'present_contact',
         'present_address',
         'permanent_contact',

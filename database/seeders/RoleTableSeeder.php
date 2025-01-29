@@ -27,7 +27,7 @@ class RoleTableSeeder extends Seeder
                 'vehicle_management',
                 'vehicle_type_management',
                 'vehicle_division_management',
-                'vehicle_rta_office_management',
+                'vehicle_facility_management',
                 'vehicle_ownership_type_management',
                 'document_type_management',
                 'legal_document_management',

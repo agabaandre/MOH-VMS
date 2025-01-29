@@ -20,21 +20,7 @@
                             placeholder="@localize('Employee Name')" value="{{ isset($item) ? $item->name : old('name') }}">
                     </div>
                 </div>
-                <div class="form-group row my-2">
-                    <label for="pay_roll_type" class="col-sm-5 col-form-label">@localize('Pay Roll Type') <i
-                            class="text-danger">*</i></label>
-                    <div class="col-sm-7">
-                        <select class="form-control basic-single" name="payroll_type" id="pay_roll_type"
-                            data-select2-id="pay_roll_type" tabindex="-1" aria-hidden="true">
-                            <option value="">@localize('Please Select One')</option>
-                            @foreach (config('employee.payroll_types') as $payroll_type)
-                                <option value="{{ $payroll_type }}"
-                                    {{ isset($item) ? ($item->payroll_type == $payroll_type ? 'selected' : '') : '' }}>
-                                    {{ $payroll_type }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
+                
                 <div class="form-group row my-2">
                     <label for="department" class="col-sm-5 col-form-label">@localize('Department') <i
                             class="text-danger">*</i></label>
@@ -66,20 +52,7 @@
                             id="email2" value="{{ isset($item) ? $item->email2 : old('email2') }}">
                     </div>
                 </div>
-                <div class="form-group row my-2">
-                    <label for="blood" class="col-sm-5 col-form-label">@localize('Blood Group') </label>
-                    <div class="col-sm-7">
-                        <select class="form-control basic-single" name="blood" id="blood"
-                            data-select2-id="blood_group" tabindex="-1" aria-hidden="true">
-                            <option value="">@localize('Please Select One') </option>
-                            @foreach (config('employee.blood_groups') as $blood_group)
-                                <option value="{{ $blood_group }}"
-                                    {{ isset($item) ? ($item->blood_group == $blood_group ? 'selected' : '') : '' }}>
-                                    {{ $blood_group }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
+                
 
                 <div class="form-group row my-2">
                     <label for="working_slot_from" class="col-sm-5 col-form-label">@localize('Working Slot From') </label>
@@ -89,13 +62,7 @@
                             value="{{ isset($item) ? $item->working_slot_from : old('working_slot_from') }}">
                     </div>
                 </div>
-                <div class="form-group row my-2">
-                    <label for="father_name" class="col-sm-5 col-form-label">@localize('Father Name') </label>
-                    <div class="col-sm-7">
-                        <input name="father_name" class="form-control" type="text" placeholder="@localize('Father Name')"
-                            id="father_name" value="{{ isset($item) ? $item->father_name : old('father_name') }}">
-                    </div>
-                </div>
+                
                 <div class="form-group row my-2">
                     <label for="present_cont" class="col-sm-5 col-form-label">@localize('Present Contact Number') </label>
                     <div class="col-sm-7">
@@ -214,14 +181,7 @@
                             value="{{ isset($item) ? $item->working_slot_to : old('working_slot_to') }}">
                     </div>
                 </div>
-                <div class="form-group row my-2">
-                    <label for="mother_name" class="col-sm-5 col-form-label">@localize('Mother Name') </label>
-                    <div class="col-sm-7">
-                        <input name="mother_name" class="form-control" type="text"
-                            placeholder="@localize('Mother Name')" id="mother_name"
-                            value="{{ isset($item) ? $item->mother_name : old('mother_name') }}">
-                    </div>
-                </div>
+               
                 <div class="form-group row my-2">
                     <label for="permanent_contact" class="col-sm-5 col-form-label">@localize('Permanent Contact Number') </label>
                     <div class="col-sm-7">

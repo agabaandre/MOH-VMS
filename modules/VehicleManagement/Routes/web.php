@@ -35,7 +35,7 @@ Route::prefix('admin/vehicle')->as('admin.vehicle.')->group(function () {
         Route::post('{pick_drop}/status-update', [PickupAndDropController::class, 'statusUpdate'])->name('status-update');
     });
     // rta-office
-    Route::resource('/rta-office', 'RTAOfficeController')->except(['show'])->parameters(['rta-office' => 'office']);
+    Route::resource('/rta-office', 'FacilityController')->except(['show'])->parameters(['rta-office' => 'office']);
     // vehicle
     Route::resource('/', 'VehicleController')->except(['show'])->parameter('', 'vehicle');
 

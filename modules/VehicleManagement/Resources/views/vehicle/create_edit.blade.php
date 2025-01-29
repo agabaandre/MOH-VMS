@@ -107,16 +107,16 @@
                 </div>
 
                 <div class="form-group row my-2">
-                    <label for="rta_office" class="col-sm-5 col-form-label">@localize('RTA Office') <i
+                    <label for="facility" class="col-sm-5 col-form-label">@localize('Facility') <i
                             class="text-danger">*</i></label>
                     <div class="col-sm-7">
-                        <select class="form-control basic-single" name="rta_circle_office_id" id="rta_office"
+                        <select class="form-control basic-single" name="rta_circle_office_id" id="facility"
                             tabindex="-1" aria-hidden="true">
                             <option value="">@localize('Please Select One')</option>
-                            @foreach ($circle_offices as $rta_office)
-                                <option value="{{ $rta_office->id }}"
-                                    {{ isset($item) ? ($item->rta_circle_office_id == $rta_office->id ? 'selected' : '') : '' }}>
-                                    {{ $rta_office->name }}</option>
+                            @foreach ($circle_offices as $facility)
+                                <option value="{{ $facility->id }}"
+                                    {{ isset($item) ? ($item->rta_circle_office_id == $facility->id ? 'selected' : '') : '' }}>
+                                    {{ $facility->name }}</option>
                             @endforeach
                         </select>
                     </div>

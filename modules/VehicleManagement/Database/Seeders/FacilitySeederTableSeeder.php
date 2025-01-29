@@ -5,7 +5,7 @@ namespace Modules\VehicleManagement\Database\Seeders;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
-class RTAOfficeSeederTableSeeder extends Seeder
+class FacilitySeederTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -35,7 +35,7 @@ class RTAOfficeSeederTableSeeder extends Seeder
         ];
 
         foreach ($data as $key => $value) {
-            \Modules\VehicleManagement\Entities\RTAOffice::create([
+            \Modules\VehicleManagement\Entities\Facility::create([
                 'name' => $value,
                 'is_active' => true,
             ]);

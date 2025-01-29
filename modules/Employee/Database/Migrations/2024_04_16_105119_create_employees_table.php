@@ -17,7 +17,6 @@ return new class() extends Migration
             $table->id();
             $table->string('employee_code')->nullable();
             $table->string('name');
-            $table->string('payroll_type')->nullable();
             $table->unsignedBigInteger('department_id')->nullable();
             $table->unsignedBigInteger('position_id')->nullable();
             $table->string('nid')->nullable();
@@ -30,8 +29,6 @@ return new class() extends Migration
             $table->date('dob')->nullable();
             $table->string('working_slot_from')->nullable();
             $table->string('working_slot_to')->nullable();
-            $table->string('father_name')->nullable();
-            $table->string('mother_name')->nullable();
             $table->string('present_contact')->nullable();
             $table->string('present_address')->nullable();
             $table->string('permanent_contact')->nullable();

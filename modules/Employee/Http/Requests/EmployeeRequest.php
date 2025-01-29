@@ -15,7 +15,6 @@ class EmployeeRequest extends FormRequest
     {
         $rules = [
             'name' => 'required|string|max:255|unique:employees,name',
-            'payroll_type' => 'required|string|max:255',
             'department_id' => 'required|exists:departments,id',
             'position_id' => 'required|exists:positions,id',
             'nid' => 'required|string|max:255',
@@ -28,8 +27,6 @@ class EmployeeRequest extends FormRequest
             'dob' => 'required|date',
             'working_slot_from' => 'nullable|string|max:255',
             'working_slot_to' => 'nullable|string|max:255',
-            'father_name' => 'nullable|string|max:255',
-            'mother_name' => 'nullable|string|max:255',
             'present_contact' => 'nullable|string|max:255',
             'present_address' => 'nullable|string|max:255',
             'permanent_contact' => 'nullable|string|max:255',

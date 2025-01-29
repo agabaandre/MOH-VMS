@@ -71,10 +71,6 @@ class EmployeeDataTable extends DataTable
 
         $query = $model->newQuery();
 
-        $query->when($employee_type, function ($query) use ($employee_type) {
-            return $query->where('payroll_type', 'like', '%'.$employee_type.'%');
-        });
-
         $query->when($department_id, function ($query) use ($department_id) {
             return $query->where('department_id', $department_id);
         });
@@ -131,11 +127,9 @@ class EmployeeDataTable extends DataTable
             Column::make('DT_RowIndex')->title(localize('SL'))->searchable(false)->orderable(false)->width(30)->addClass('text-center'),
             Column::make('name')->title(localize('Name'))->defaultContent('N/A'),
             Column::make('nid')->title(localize('NID'))->defaultContent('N/A'),
-            Column::make('payroll_type')->title(localize('Type'))->defaultContent('N/A'),
             Column::make('department')->title(localize('Department'))->defaultContent('N/A'),
             Column::make('position')->title(localize('Designation'))->defaultContent('N/A'),
             Column::make('phone')->title(localize('Phone'))->defaultContent('N/A'),
-            Column::make('blood_group')->title(localize('Blood Group'))->defaultContent('N/A'),
             Column::computed('action')->title(localize('Action'))
                 ->orderable(false)
                 ->searchable(false)

@@ -3,14 +3,14 @@
 namespace Modules\VehicleManagement\DataTables;
 
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Modules\VehicleManagement\Entities\RTAOffice;
+use Modules\VehicleManagement\Entities\Facility;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class RTAOfficeDataTable extends DataTable
+class FacilityDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -39,7 +39,7 @@ class RTAOfficeDataTable extends DataTable
     /**
      * Get query source of dataTable.
      */
-    public function query(RTAOffice $model): QueryBuilder
+    public function query(Facility $model): QueryBuilder
     {
         return $model->newQuery();
     }

@@ -19,7 +19,7 @@ class VehicleManagementDatabaseSeeder extends Seeder
         $this->call([
             VehicleInsuranceRecurringPeriodSeederTableSeeder::class,
             VehicleInsuranceCompanySeederTableSeeder::class,
-            RTAOfficeSeederTableSeeder::class,
+            FacilitySeederTableSeeder::class,
             VehicleOwnershipTypeSeederTableSeeder::class,
             VehicleTypeSeederTableSeeder::class,
             VehicleTableSeeder::class,
