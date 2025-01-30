@@ -41,6 +41,10 @@ class Employee extends Model
         'avatar_path',
     ];
 
+    protected $casts = [
+        'dob' => 'date',
+    ];
+
     protected static function boot()
     {
         parent::boot();

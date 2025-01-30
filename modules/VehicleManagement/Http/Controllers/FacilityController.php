@@ -2,6 +2,7 @@
 
 namespace Modules\VehicleManagement\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\VehicleManagement\DataTables\FacilityDataTable;
@@ -41,7 +42,7 @@ class FacilityController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(FacilityDataTable $dataTable)
+    public function index(FacilityDataTable $dataTable): mixed
     {
         \cs_set('theme', [
             'description' => 'Display a listing of Vehicle office in Database.',
