@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Installer - Vehicle Management System by BDTask</title>
+    <title>Installer - Vehicle Management System</title>
     <link rel="shortcut icon" href="install/assets/img/favicon.png" type="image/x-icon">
     <!-- Bootstrap -->
     <link href="./install/assets/css/bootstrap.min.css" rel="stylesheet">
