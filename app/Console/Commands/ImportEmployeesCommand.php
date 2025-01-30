@@ -14,23 +14,9 @@ use Modules\Employee\Entities\Position;
 
 class ImportEmployeesCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'import:employees';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Import employees from JSON file in public storage';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
         $filename = 'employees.json';
@@ -60,7 +46,6 @@ class ImportEmployeesCommand extends Command
         $this->info("Starting import of {$totalEntries} employees...");
         $this->output->progressStart($totalEntries);
 
-        // Start database transaction
         \DB::beginTransaction();
 
         try {
@@ -89,9 +74,8 @@ class ImportEmployeesCommand extends Command
                         $entry['othername'] ?? ''
                     ));
 
-                    $dob = $entry['birth_date'];
-                    $dob = Carbon::parse($dob)->format('Y-m-d');
-                    // dd($dob);
+                    // Parse and validate birth date
+                    $dob = $this->validateAndParseDate($entry['birth_date']);
 
                     // Create/update employee record
                     $employee = Employee::updateOrCreate(
@@ -102,7 +86,7 @@ class ImportEmployeesCommand extends Command
                             'position_id' => $position->id,
                             'phone' => $entry['mobile'] ?? null,
                             'email' => $entry['email'] ?? null,
-                            'dob' => $dob,
+                            'dob' => $dob,  // Now using validated date
                             'nid' => $entry['nin'] ?? null,
                             'created_at' => now(),
                             'updated_at' => now(),
@@ -128,7 +112,6 @@ class ImportEmployeesCommand extends Command
                 }
             }
 
-            // Commit transaction if all entries processed
             \DB::commit();
 
             $this->output->progressFinish();
@@ -157,34 +140,22 @@ class ImportEmployeesCommand extends Command
         }
     }
 
-    /**
-     * Create a driver entry for the employee.
-     *
-     * @param Employee $employee
-     * @param array $entry
-     */
-    /**
-     * Validate and parse a date string
-     *
-     * @param string|null $dateString
-     * @return string|null
-     */
     protected function validateAndParseDate(?string $dateString): ?string
     {
-        if (empty($dateString)) {
-            return null;
-        }
-
-        // Check if date is in valid format and within reasonable range
-        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString) ||
-            $dateString < '1900-01-01' || 
-            $dateString > now()->addYears(1)->toDateString()) {
-            Log::warning('Invalid date format or range', ['date' => $dateString]);
+        if (empty($dateString) || $dateString === '0000-00-00') {
             return null;
         }
 
         try {
-            return Carbon::parse($dateString)->toDateString();
+            $date = Carbon::parse($dateString);
+
+            // Check if date is within reasonable range
+            if ($date->year < 1900 || $date->isFuture()) {
+                Log::warning('Date out of reasonable range', ['date' => $dateString]);
+                return null;
+            }
+
+            return $date->toDateString();
         } catch (\Exception $e) {
             Log::warning('Failed to parse date', [
                 'date' => $dateString,
@@ -196,7 +167,6 @@ class ImportEmployeesCommand extends Command
 
     protected function createDriver(Employee $employee, array $entry)
     {
-        // Assuming you have a default license type for drivers
         $licenseType = LicenseType::firstOrCreate(['name' => 'Default License']);
 
         Driver::updateOrCreate(
@@ -206,13 +176,12 @@ class ImportEmployeesCommand extends Command
                 'driver_code' => $entry['ipps'] ?? null,
                 'phone' => $entry['mobile'] ?? null,
                 'license_type_id' => $licenseType->id,
-                'license_num' => $entry['nin'] ?? null, // Using NIN as license number
-                'license_issue_date' => now(), // Default to current date
-                'license_expiry_date' => now()->addYears(5), // Default to 5 years from now
+                'license_num' => $entry['nin'] ?? null,
+                'license_issue_date' => now(),
+                'license_expiry_date' => now()->addYears(5),
                 'nid' => $entry['nin'] ?? null,
-                'dob' => !empty($entry['birth_date']) ?
-                    Carbon::parse($entry['birth_date'])->toDateString() : null,
-                'joining_date' => now(), // Default to current date
+                'dob' => $this->validateAndParseDate($entry['birth_date']),  // Using the same validation
+                'joining_date' => now(),
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),

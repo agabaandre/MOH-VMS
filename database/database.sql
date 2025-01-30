@@ -533,7 +533,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (27, '2024_04_20_044803_create_vehicle_requisition_types_table', 1),
 (28, '2024_04_20_045000_create_vehicle_maintenance_types_table', 1),
 (29, '2024_04_20_045421_create_fuel_types_table', 1),
-(30, '2024_04_20_045551_create_facilitys_table', 1),
+(30, '2024_04_20_045551_create_facilities_table', 1),
 (31, '2024_04_20_052012_create_vehicle_ownership_types_table', 1),
 (32, '2024_04_20_074618_create_vehicle_insurance_companies_table', 1),
 (33, '2024_04_20_074719_create_vehicle_insurance_recurring_periods_table', 1),
@@ -846,10 +846,10 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `facilitys`
+-- Table structure for table `facilities`
 --
 
-CREATE TABLE `facilitys` (
+CREATE TABLE `facilities` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(120) NOT NULL,
   `description` varchar(120) DEFAULT NULL,
@@ -1504,11 +1504,11 @@ ALTER TABLE `role_has_permissions`
   ADD KEY `role_has_permissions_role_id_foreign` (`role_id`);
 
 --
--- Indexes for table `facilitys`
+-- Indexes for table `facilities`
 --
-ALTER TABLE `facilitys`
+ALTER TABLE `facilities`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `facilitys_name_unique` (`name`);
+  ADD UNIQUE KEY `facilities_name_unique` (`name`);
 
 --
 -- Indexes for table `sessions`
@@ -1839,9 +1839,9 @@ ALTER TABLE `roles`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `facilitys`
+-- AUTO_INCREMENT for table `facilities`
 --
-ALTER TABLE `facilitys`
+ALTER TABLE `facilities`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --

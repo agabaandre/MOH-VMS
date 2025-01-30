@@ -124,7 +124,7 @@
                             </x-admin.nav-link>
                         @endcan
                         @can('vehicle_facility_management')
-                            <x-admin.nav-link href="{{ route('admin.vehicle.rta-office.index') }}">
+                            <x-admin.nav-link href="{{ route('admin.vehicle.facility.index') }}">
                                 {{ localize('Facility') }}
                             </x-admin.nav-link>
                         @endcan

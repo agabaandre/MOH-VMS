@@ -9,7 +9,7 @@
         </x-slot>
         <div>
             <x-data-table :dataTable="$dataTable" />
-            <div id="page-axios-data" data-table-id="#vehicle-rta-office-table"></div>
+            <div id="page-axios-data" data-table-id="#vehicle-facility-table"></div>
         </div>
     </x-card>
 </x-app-layout>

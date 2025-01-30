@@ -33,7 +33,7 @@ class FacilityController extends Controller
                     'link' => false,
                 ],
             ],
-            'rprefix' => 'admin.vehicle.rta-office',
+            'rprefix' => 'admin.vehicle.facility',
         ]);
     }
 
@@ -69,7 +69,7 @@ class FacilityController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255|unique:facilitys,name',
+            'name' => 'required|string|max:255|unique:facilities,name',
             'description' => 'nullable|string',
             'is_active' => 'required|boolean',
         ]);
@@ -96,7 +96,7 @@ class FacilityController extends Controller
     public function update(Facility $office, Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255|unique:facilitys,name,' . $office->id . ',id',
+            'name' => 'required|string|max:255|unique:facilities,name,' . $office->id . ',id',
             'description' => 'nullable|string',
             'is_active' => 'required|boolean',
         ]);

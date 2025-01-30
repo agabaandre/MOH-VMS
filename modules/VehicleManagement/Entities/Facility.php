@@ -12,7 +12,7 @@ class Facility extends Model
         HasFactory;
 
     // set table name
-    protected $table = 'facilitys';
+    protected $table = 'facilities';
 
     // The mass assignable attributes.
     protected $fillable = [

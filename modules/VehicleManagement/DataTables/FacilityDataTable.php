@@ -50,7 +50,7 @@ class FacilityDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('vehicle-rta-office-table')
+            ->setTableId('vehicle-facility-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->dom("<'row mb-3'<'col-md-4'l><'col-md-4 text-center'B><'col-md-4'f>>rt<'bottom'<'row'<'col-md-6'i><'col-md-6'p>>><'clear'>")
@@ -96,6 +96,6 @@ class FacilityDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'vehicle-rta-office-'.date('YmdHis');
+        return 'vehicle-facility-'.date('YmdHis');
     }
 }
