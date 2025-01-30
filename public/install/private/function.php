@@ -486,29 +486,6 @@ function is_https()
     return false;
 }
 
-/**===============================================
- * Envato API
- * ==============================================*/
-
-function envato_request_validate($data)
-{
-    $message = null;
-    // validation for each posted data
-    $user_id = filter_request('User ID', $data['user_id']);
-    $purchase_key = filter_request('Purchase Key', $data['purchase_key']);
-    // check if user id and purchase key is valid
-    if (is_string($user_id)) {
-        $message .= "$user_id";
-    }
-    if (is_string($purchase_key)) {
-        $message .= "$purchase_key";
-    }
-    if ($message) {
-        session_flash('error', [$message]);
-        header('location: ./?a=envato_license');
-    }
-}
-
 /*======================================
 Write .env file
 ======================================== */
