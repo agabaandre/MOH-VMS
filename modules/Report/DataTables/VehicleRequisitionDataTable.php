@@ -152,7 +152,7 @@ class VehicleRequisitionDataTable extends DataTable
             Column::make('driver_mobile')->title(localize('Driver Mobile'))->defaultContent('N/A'),
             Column::make('where_from')->title(localize('From'))->defaultContent('N/A'),
             Column::make('where_to')->title(localize('To'))->defaultContent('N/A'),
-            Column::make('tolerance')->title(localize('Duration'))->defaultContent('N/A'),
+            Column::make('number_of_days')->title(localize('Duration'))->defaultContent('N/A'),
             Column::make('number_of_passenger')->title(localize('Total Passenger'))->defaultContent('N/A'),
             Column::make('purpose')->title(localize('Purpose'))->defaultContent('N/A'),
             Column::make('requested_by')->title(localize('Requested By'))->defaultContent('N/A'),

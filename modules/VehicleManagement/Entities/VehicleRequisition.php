@@ -20,7 +20,7 @@ class VehicleRequisition extends Model
         'requisition_date',
         'time_from',
         'time_to',
-        'tolerance',
+        'number_of_days',
         'number_of_passenger',
         'driver_id',
         'purpose',

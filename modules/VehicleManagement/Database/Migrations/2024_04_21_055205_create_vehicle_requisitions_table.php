@@ -22,7 +22,7 @@ return new class () extends Migration {
             $table->date('requisition_date')->nullable();
             $table->time('time_from')->nullable();
             $table->time('time_to')->nullable();
-            $table->string('tolerance')->nullable();
+            $table->string('number_of_days')->nullable();
             $table->integer('number_of_passenger')->nullable();
             $table->unsignedBigInteger('driver_id')->nullable();
             $table->string('purpose')->nullable();

@@ -28,6 +28,7 @@ class Driver extends Model
         'permanent_address',
         'avatar_path',
         'is_active',
+        'employee_id'
     ];
 
     protected static function newFactory()

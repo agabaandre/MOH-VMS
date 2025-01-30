@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Modules\Employee\Entities\Department;
 use Modules\Employee\Entities\Driver;
 use Modules\Employee\Entities\Employee;
@@ -86,7 +87,7 @@ class ImportEmployeesCommand extends Command
                             'position_id' => $position->id,
                             'phone' => $entry['mobile'] ?? null,
                             'email' => $entry['email'] ?? null,
-                            'dob' => $dob,  // Now using validated date
+                            'dob' => $dob,
                             'nid' => $entry['nin'] ?? null,
                             'created_at' => now(),
                             'updated_at' => now(),
@@ -94,7 +95,7 @@ class ImportEmployeesCommand extends Command
                     );
 
                     // Check if the job is "Car Driver" and create a driver entry
-                    if (strtolower($entry['job']) === 'car driver') {
+                    if (strtolower($position->name) === 'car driver') {
                         $this->createDriver($employee, $entry);
                     }
 
@@ -169,18 +170,22 @@ class ImportEmployeesCommand extends Command
     {
         $licenseType = LicenseType::firstOrCreate(['name' => 'Default License']);
 
+        // Create driver with employee_id included in both create and update arrays
         Driver::updateOrCreate(
-            ['employee_id' => $employee->id],
             [
+                'employee_id' => $employee->id,  // Include in the "where" clause
+                'driver_code' => $entry['ipps'] ?? null
+            ],
+            [
+                'employee_id' => $employee->id,  // Include in the data to be inserted/updated
                 'name' => $employee->name,
-                'driver_code' => $entry['ipps'] ?? null,
                 'phone' => $entry['mobile'] ?? null,
                 'license_type_id' => $licenseType->id,
                 'license_num' => $entry['nin'] ?? null,
                 'license_issue_date' => now(),
                 'license_expiry_date' => now()->addYears(5),
                 'nid' => $entry['nin'] ?? null,
-                'dob' => $this->validateAndParseDate($entry['birth_date']),  // Using the same validation
+                'dob' => $this->validateAndParseDate($entry['birth_date']),
                 'joining_date' => now(),
                 'is_active' => true,
                 'created_at' => now(),

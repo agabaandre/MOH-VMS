@@ -5,7 +5,7 @@ namespace Modules\VehicleManagement\Database\Seeders;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
-class facilitieseederTableSeeder extends Seeder
+class FacilitySeederTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

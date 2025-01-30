@@ -30,7 +30,7 @@ class VehicleRequisitionFactory extends Factory
             'requisition_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'time_from' => $this->faker->time(),
             'time_to' => $this->faker->time(),
-            'tolerance' => $this->faker->word,
+            'number_of_days' => $this->faker->word,
             'number_of_passenger' => $this->faker->randomDigitNotNull,
             'driver_id' => $this->faker->numberBetween(1, 10),
             'purpose' => $this->faker->word,

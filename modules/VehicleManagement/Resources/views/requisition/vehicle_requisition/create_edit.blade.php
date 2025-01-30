@@ -103,14 +103,14 @@
                 </div>
 
                 <div class="form-group row my-2">
-                    <label for="tolerance" class="col-sm-5 col-form-label">@localize('Tolerance Duration')
+                    <label for="number_of_days" class="col-sm-5 col-form-label">@localize('Number Of Days')
                         <i class="text-danger">*</i></label>
                     </label>
 
                     <div class="col-sm-7">
-                        <input name="tolerance" required class="form-control" type="text"
-                            placeholder="@localize('Tolarance Duration')" id="tolerance_duration"
-                            value="{{ isset($item) ? $item->tolerance : old('tolerance') }}">
+                        <input name="number_of_days" required class="form-control" type="text"
+                            placeholder="@localize('Tolarance Duration')" id="number_of_days"
+                            value="{{ isset($item) ? $item->number_of_days : old('number_of_days') }}">
                     </div>
                 </div>
 

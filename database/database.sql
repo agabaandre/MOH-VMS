@@ -1140,7 +1140,7 @@ CREATE TABLE `vehicle_requisitions` (
   `requisition_date` date DEFAULT NULL,
   `time_from` time DEFAULT NULL,
   `time_to` time DEFAULT NULL,
-  `tolerance` varchar(120) DEFAULT NULL,
+  `number_of_days` varchar(120) DEFAULT NULL,
   `number_of_passenger` int(11) DEFAULT NULL,
   `driver_id` bigint(20) UNSIGNED DEFAULT NULL,
   `purpose` varchar(120) DEFAULT NULL,
