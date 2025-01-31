@@ -34,7 +34,7 @@
                 </x-admin.nav-link>
 
                 <!-- Employee Management -->
-                @if (can('employee_management'))
+                @if (module_active('employee'))
                     <x-admin.multi-nav>
                         <x-slot name="title">
 
