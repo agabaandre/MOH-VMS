@@ -16,144 +16,146 @@ use Modules\VehicleManagement\Entities\Facility;
 
 class ImportEmployeesCommand extends Command
 {
-    protected $signature = 'import:employees';
+    protected $signature = 'import:employees {--batch-size=100 : Number of records to process in each batch}';
     protected $description = 'Import employees from JSON file in public storage';
 
-    public function handle()
+    protected function getDataFromJson(string $filename): array
     {
-        $filename = 'employees.json';
-        $startTime = microtime(true);
-
         if (!Storage::disk('public')->exists($filename)) {
-            $this->error("File not found in storage: {$filename}");
-            return;
+            throw new \Exception("File not found in storage: {$filename}");
         }
-
-        Log::info('Starting employee import process');
 
         $json = Storage::disk('public')->get($filename);
         $data = json_decode($json, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->error('Invalid JSON format');
-            Log::error('Invalid JSON format in employees file');
-            return;
+            throw new \Exception('Invalid JSON format in employees file');
         }
 
-        $totalEntries = count($data);
-        $successCount = 0;
-        $errorCount = 0;
-        $skippedCount = 0;
+        return $data;
+    }
 
-        $this->info("Starting import of {$totalEntries} employees...");
-        $this->output->progressStart($totalEntries);
+    public function handle()
+    {
+        $filename = 'employees.json';
+        $startTime = microtime(true);
+        $batchSize = (int) $this->option('batch-size');
 
-        \DB::beginTransaction();
+        Log::info('Starting employee import process', ['batch_size' => $batchSize]);
 
         try {
-            foreach ($data as $entry) {
+            $data = $this->getDataFromJson($filename);
+            $totalEntries = count($data);
+            $batches = array_chunk($data, $batchSize);
+            
+            $successCount = 0;
+            $errorCount = 0;
+            $skippedCount = 0;
+
+            $this->info("Starting import of {$totalEntries} employees in " . count($batches) . " batches...");
+            $this->output->progressStart($totalEntries);
+
+            foreach ($batches as $batchIndex => $batchData) {
+                $this->info("\nProcessing batch " . ($batchIndex + 1) . " of " . count($batches));
+                \DB::beginTransaction();
+
                 try {
-                    // Skip invalid entries
-                    if (empty($entry['surname']) || empty($entry['firstname'])) {
-                        Log::warning('Skipped entry: Missing surname or firstname', $entry);
-                        $skippedCount++;
-                        $this->output->progressAdvance();
-                        continue;
-                    }
+                    foreach ($batchData as $entry) {
+                        if (empty($entry['surname']) || empty($entry['firstname'])) {
+                            Log::warning('Skipped entry: Missing surname or firstname', $entry);
+                            $skippedCount++;
+                            $this->output->progressAdvance();
+                            continue;
+                        }
 
-                    // Handle department relationship
-                    $departmentName = $entry['department'] ?? 'Unassigned';
-                    $department = Department::firstOrCreate(['name' => $departmentName]);
+                        $department = Department::firstOrCreate(['name' => $entry['department'] ?? 'Unassigned']);
+                        $position = Position::firstOrCreate(['name' => $entry['job'] ?? 'Unspecified']);
+                        $facility = $this->processFacility($entry);
 
-                    // Handle position relationship
-                    $positionName = $entry['job'] ?? 'Unspecified';
-                    $position = Position::firstOrCreate(['name' => $positionName]);
+                        $fullName = trim(sprintf('%s %s %s',
+                            $entry['surname'],
+                            $entry['firstname'],
+                            $entry['othername'] ?? ''
+                        ));
 
-                    // Handle facility relationship
-                    $facility = null;
-                    if (!empty($entry['facility_id']) && !empty($entry['facility'])) {
-                        $facility = Facility::updateOrCreate(
-                            ['facility_id' => $entry['facility_id']],
+                        $email = $entry['email'] ?? $this->generateEmailFromName($fullName);
+                        $dob = $this->validateAndParseDate($entry['birth_date']);
+
+                        $employee = Employee::updateOrCreate(
+                            ['employee_code' => $entry['ipps']],
                             [
-                                'name' => $entry['facility'],
-                                'district' => $entry['district'],
-                                'region' => $entry['region'] ?? null,
-                                'is_active' => true,
+                                'name' => $fullName,
+                                'department_id' => $department->id,
+                                'position_id' => $position->id,
+                                'phone' => $entry['mobile'] ?? null,
+                                'email' => $email,
+                                'dob' => $dob,
+                                'nid' => $entry['nin'] ?? null,
+                                'facility_id' => $facility ? $facility->id : null,
+                                'created_at' => now(),
+                                'updated_at' => now(),
                             ]
                         );
+
+                        if (strtolower($position->name) === 'car driver') {
+                            $this->createDriver($employee, $entry);
+                        }
+
+                        $successCount++;
+                        $this->output->progressAdvance();
                     }
 
-                    // Create full name
-                    $fullName = trim(sprintf('%s %s %s',
-                        $entry['surname'],
-                        $entry['firstname'],
-                        $entry['othername'] ?? ''
-                    ));
-
-                    // Parse and validate birth date
-                    $dob = $this->validateAndParseDate($entry['birth_date']);
-
-                    // Create/update employee record
-                    $employee = Employee::updateOrCreate(
-                        ['employee_code' => $entry['ipps']],
-                        [
-                            'name' => $fullName,
-                            'department_id' => $department->id,
-                            'position_id' => $position->id,
-                            'phone' => $entry['mobile'] ?? null,
-                            'email' => $entry['email'] ?? null,
-                            'dob' => $dob,
-                            'nid' => $entry['nin'] ?? null,
-                            'facility_id' => $facility ? $facility->id : null,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]
-                    );
-
-                    // Check if the job is "Car Driver" and create a driver entry
-                    if (strtolower($position->name) === 'car driver') {
-                        $this->createDriver($employee, $entry);
-                    }
-
-                    $successCount++;
-                    $this->output->progressAdvance();
+                    \DB::commit();
+                    $this->info("Batch " . ($batchIndex + 1) . " completed successfully");
 
                 } catch (\Exception $e) {
-                    $errorCount++;
-                    Log::error('Error importing entry', [
-                        'entry' => $entry,
-                        'error' => $e->getMessage()
+                    \DB::rollBack();
+                    $errorCount += count($batchData);
+                    $this->error("Batch " . ($batchIndex + 1) . " failed: " . $e->getMessage());
+                    Log::error('Batch import failed', [
+                        'batch_index' => $batchIndex,
+                        'error' => $e->getMessage(),
+                        'batch_data' => $batchData
                     ]);
-                    $this->error("Error: {$e->getMessage()}");
-                    $this->output->progressAdvance();
                 }
             }
-
-            \DB::commit();
-
             $this->output->progressFinish();
-
             $duration = round(microtime(true) - $startTime, 2);
-            $this->info("\nImport completed in {$duration} seconds");
-            $this->info("Success: {$successCount}, Errors: {$errorCount}, Skipped: {$skippedCount}");
+
+            $this->newLine();
+            $this->info("Import completed in {$duration} seconds");
+            $this->table(
+                ['Status', 'Count'],
+                [
+                    ['Successful', $successCount],
+                    ['Failed', $errorCount],
+                    ['Skipped', $skippedCount],
+                    ['Total Processed', $successCount + $errorCount + $skippedCount],
+                ]
+            );
 
             Log::info('Employee import completed', [
                 'success_count' => $successCount,
                 'error_count' => $errorCount,
                 'skipped_count' => $skippedCount,
-                'duration_seconds' => $duration
+                'total_processed' => $successCount + $errorCount + $skippedCount,
+                'duration_seconds' => $duration,
+                'batch_size' => $batchSize,
+                'total_batches' => count($batches)
             ]);
 
+            return 0;
+
         } catch (\Exception $e) {
-            \DB::rollBack();
-            $this->error("\nImport failed. All changes rolled back.");
-            Log::error('Employee import failed - transaction rolled back', [
+            $this->error("\nImport failed: " . $e->getMessage());
+            Log::error('Employee import failed', [
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
                 'success_count' => $successCount,
                 'error_count' => $errorCount,
                 'skipped_count' => $skippedCount
             ]);
-            throw $e;
+            return 1;
         }
     }
 
@@ -179,6 +181,109 @@ class ImportEmployeesCommand extends Command
                 'error' => $e->getMessage()
             ]);
             return null;
+        }
+    }
+
+    /**
+     * Generate a unique email address from a name
+     */
+    protected function generateEmailFromName(string $name): string
+    {
+        // Convert to lowercase and replace spaces with dots
+        $email = strtolower(str_replace(' ', '.', $name));
+        
+        // Remove special characters and dots at start/end
+        $email = preg_replace('/[^a-z0-9.]/', '', $email);
+        $email = trim($email, '.');
+        
+        // Ensure we have at least one character and add random string for uniqueness
+        if (empty($email)) {
+            $email = 'employee.' . Str::random(8);
+        }
+        
+        // Check if email exists and add suffix if needed
+        $baseEmail = $email . '@mail.com';
+        $counter = 1;
+        
+        while (Employee::where('email', $baseEmail)->exists()) {
+            $baseEmail = $email . '.' . $counter . '@mail.com';
+            $counter++;
+        }
+        
+        return $baseEmail;
+    }
+
+    /**
+     * Log facility related errors with context
+     */
+    protected function logFacilityError(string $message, array $context = []): void
+    {
+        $logContext = array_merge([
+            'timestamp' => now()->toDateTimeString(),
+            'action' => 'facility_import',
+        ], $context);
+
+        Log::error($message, $logContext);
+    }
+
+    /**
+     * Process facility data with improved error handling
+     */
+    protected function processFacility(array $entry): ?Facility
+    {
+        if (empty($entry['facility_id']) || empty($entry['facility'])) {
+            return null;
+        }
+
+        try {
+            // First try to find by facility_id
+            $facility = Facility::where('facility_id', $entry['facility_id'])->first();
+            
+            if (!$facility) {
+                // If not found by facility_id, try to find by name
+                $facility = Facility::where('name', $entry['facility'])->first();
+                
+                if (!$facility) {
+                    // If facility doesn't exist at all, create it
+                    return Facility::create([
+                        'facility_id' => $entry['facility_id'],
+                        'name' => $entry['facility'],
+                        'district' => $entry['district'],
+                        'region' => $entry['region'] ?? null,
+                        'is_active' => true,
+                    ]);
+                }
+                
+                $this->logFacilityError('Facility exists with different facility_id', [
+                    'existing_facility' => $facility->toArray(),
+                    'import_data' => [
+                        'facility_id' => $entry['facility_id'],
+                        'name' => $entry['facility'],
+                        'district' => $entry['district'],
+                        'region' => $entry['region'] ?? null,
+                    ]
+                ]);
+                
+                return $facility;
+            }
+            
+            // Update existing facility
+            $facility->update([
+                'name' => $entry['facility'],
+                'district' => $entry['district'],
+                'region' => $entry['region'] ?? null,
+                'is_active' => true,
+            ]);
+            
+            return $facility;
+
+        } catch (\Exception $e) {
+            $this->logFacilityError('Error processing facility', [
+                'error' => $e->getMessage(),
+                'facility_data' => $entry
+            ]);
+            
+            throw $e;
         }
     }
 
