@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Modules\Employee\Entities\Department;
 use Modules\Employee\Entities\Driver;
@@ -17,19 +17,20 @@ use Modules\VehicleManagement\Entities\Facility;
 class ImportEmployeesCommand extends Command
 {
     protected $signature = 'import:employees {--batch-size=100 : Number of records to process in each batch}';
-    protected $description = 'Import employees from JSON file in public storage';
+    protected $description = 'Import employees from HRIS API';
 
-    protected function getDataFromJson(string $filename): array
+    protected function getDataFromApi(): array
     {
-        if (!Storage::disk('public')->exists($filename)) {
-            throw new \Exception("File not found in storage: {$filename}");
+        $response = Http::timeout(60)->get('https://hris.health.go.ug/apiv1/index.php/api/ihrisdata');
+
+        if (!$response->successful()) {
+            throw new \Exception("Failed to fetch data from HRIS API: " . $response->status());
         }
 
-        $json = Storage::disk('public')->get($filename);
-        $data = json_decode($json, true);
+        $data = $response->json();
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception('Invalid JSON format in employees file');
+        if (!is_array($data)) {
+            throw new \Exception('Invalid response format from HRIS API');
         }
 
         return $data;
@@ -37,14 +38,14 @@ class ImportEmployeesCommand extends Command
 
     public function handle()
     {
-        $filename = 'employees.json';
         $startTime = microtime(true);
         $batchSize = (int) $this->option('batch-size');
 
         Log::info('Starting employee import process', ['batch_size' => $batchSize]);
 
         try {
-            $data = $this->getDataFromJson($filename);
+            $this->info("Fetching data from HRIS API...");
+            $data = $this->getDataFromApi();
             $totalEntries = count($data);
             $batches = array_chunk($data, $batchSize);
             
