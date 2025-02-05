@@ -42,7 +42,6 @@ class VehicleController extends Controller
      */
     public function index(VehicleDataTable $dataTable)
     {
-
         return $dataTable->render('vehiclemanagement::vehicle.index', [
             'departments' => Department::all(),
             'vehicle_types' => VehicleType::where('is_active', true)->get(),
@@ -71,13 +70,13 @@ class VehicleController extends Controller
      */
     public function store(Request $request)
     {
-
         $data = $request->validate([
             'name' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'department_id' => 'required|integer',
             'registration_date' => 'required',
             'license_plate' => 'required',
-            'alert_cell_no' => 'required',
+            'previous_plate' => 'nullable|string',
             'ownership_id' => 'nullable|integer',
             'vehicle_type_id' => 'nullable|integer',
             'vehicle_division_id' => 'nullable|integer',
@@ -86,6 +85,21 @@ class VehicleController extends Controller
             'vendor_id' => 'nullable|integer',
             'seat_capacity' => 'nullable|integer',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->extension();
+            
+            // Create directory if it doesn't exist
+            $uploadPath = public_path('uploads/vehicles');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+            
+            $image->move($uploadPath, $imageName);
+            $data['image'] = 'uploads/vehicles/' . $imageName;
+        }
 
         $item = Vehicle::create($data);
 
@@ -97,7 +111,6 @@ class VehicleController extends Controller
      */
     public function edit(Vehicle $vehicle)
     {
-
         return view('vehiclemanagement::vehicle.create_edit', [
             'departments' => Department::all(),
             'vehicle_types' => VehicleType::where('is_active', true)->get(),
@@ -114,13 +127,13 @@ class VehicleController extends Controller
      */
     public function update(Request $request, Vehicle $vehicle)
     {
-
         $data = $request->validate([
             'name' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'department_id' => 'required|integer',
             'registration_date' => 'required',
             'license_plate' => 'required',
-            'alert_cell_no' => 'required',
+            'previous_plate' => 'nullable|string',
             'ownership_id' => 'nullable|integer',
             'vehicle_type_id' => 'nullable|integer',
             'vehicle_division_id' => 'nullable|integer',
@@ -129,6 +142,26 @@ class VehicleController extends Controller
             'vendor_id' => 'nullable|integer',
             'seat_capacity' => 'nullable|integer',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Remove old image if exists
+            if ($vehicle->image && file_exists(public_path($vehicle->image))) {
+                unlink(public_path($vehicle->image));
+            }
+
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->extension();
+            
+            // Create directory if it doesn't exist
+            $uploadPath = public_path('uploads/vehicles');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+            
+            $image->move($uploadPath, $imageName);
+            $data['image'] = 'uploads/vehicles/' . $imageName;
+        }
 
         $vehicle->update($data);
 
@@ -140,7 +173,10 @@ class VehicleController extends Controller
      */
     public function destroy(Vehicle $vehicle)
     {
-
+        // Remove image if exists
+        if ($vehicle->image && file_exists(public_path($vehicle->image))) {
+            unlink(public_path($vehicle->image));
+        }
 
         $vehicle->delete();
         return response()->success(null, localize('Vehicle Deleted Successfully'), 200);

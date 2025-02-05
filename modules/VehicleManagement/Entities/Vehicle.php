@@ -14,11 +14,11 @@ class Vehicle extends Model
 
     protected $fillable = [
         'name',
+        'image',
         'department_id',
         'registration_date',
         'license_plate',
-        'alert_cell_no',
-        'alert_email',
+        'previous_plate',
         'ownership_id',
         'vehicle_type_id',
         'vehicle_division_id',

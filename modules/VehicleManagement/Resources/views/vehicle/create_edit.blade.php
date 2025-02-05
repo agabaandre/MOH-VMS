@@ -11,6 +11,19 @@
     </div>
     <div class="modal-body">
         <div class="row">
+            <div class="col-12 mb-3">
+                <div class="form-group row">
+                    <label for="image" class="col-sm-2 col-form-label">@localize('Vehicle Image')</label>
+                    <div class="col-sm-10">
+                        <input type="file" name="image" id="image" class="form-control" accept="image/*">
+                        @if(isset($item) && $item->image)
+                            <div class="mt-2">
+                                <img src="{{ asset($item->image) }}" alt="Vehicle Image" class="img-thumbnail" style="max-height: 100px;">
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
             <div class="col-md-12 col-lg-6">
 
                 <div class="form-group row my-2">
@@ -49,21 +62,19 @@
                 </div>
 
                 <div class="form-group row my-2">
-                    <label for="license_plate" class="col-sm-5 col-form-label">@localize('License Plate') <i
-                            class="text-danger">*</i></label> </label>
+                    <label for="previous_plate" class="col-sm-5 col-form-label">@localize('Previous Number Plate')</label>
                     <div class="col-sm-7">
-                        <input name="license_plate" class="form-control" type="text" placeholder="@localize('License Plate')"
-                            id="license_plate" value="{{ isset($item) ? $item->license_plate : old('license_plate') }}"
-                            required>
+                        <input name="previous_plate" class="form-control" type="text" placeholder="@localize('Previous Number Plate')"
+                            id="previous_plate" value="{{ isset($item) ? $item->previous_plate : old('previous_plate') }}">
                     </div>
                 </div>
 
                 <div class="form-group row my-2">
-                    <label for="alert_cell_no" class="col-sm-5 col-form-label">@localize('Alert Cell Number') <i
-                            class="text-danger">*</i></label> </label>
+                    <label for="license_plate" class="col-sm-5 col-form-label">@localize('Current License Plate') <i
+                            class="text-danger">*</i></label>
                     <div class="col-sm-7">
-                        <input name="alert_cell_no" class="form-control" type="number" placeholder="@localize('Alert Cell Number')"
-                            id="alert_cell_no" value="{{ isset($item) ? $item->alert_cell_no : old('alert_cell_no') }}"
+                        <input name="license_plate" class="form-control" type="text" placeholder="@localize('Current License Plate')"
+                            id="license_plate" value="{{ isset($item) ? $item->license_plate : old('license_plate') }}"
                             required>
                     </div>
                 </div>
