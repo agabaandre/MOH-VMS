@@ -70,6 +70,9 @@ class FacilityController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255|unique:facilities,name',
+            'facility_id' => 'nullable|string|max:255|unique:facilities,facility_id',
+            'district' => 'nullable|string|max:255',
+            'region' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'is_active' => 'required|boolean',
         ]);
@@ -97,6 +100,9 @@ class FacilityController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255|unique:facilities,name,' . $office->id . ',id',
+            'facility_id' => 'nullable|string|max:255|unique:facilities,facility_id,' . $office->id . ',id',
+            'district' => 'nullable|string|max:255',
+            'region' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'is_active' => 'required|boolean',
         ]);

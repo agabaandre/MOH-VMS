@@ -12,6 +12,7 @@ use Modules\Employee\Entities\Driver;
 use Modules\Employee\Entities\Employee;
 use Modules\Employee\Entities\LicenseType;
 use Modules\Employee\Entities\Position;
+use Modules\VehicleManagement\Entities\Facility;
 
 class ImportEmployeesCommand extends Command
 {
@@ -68,6 +69,20 @@ class ImportEmployeesCommand extends Command
                     $positionName = $entry['job'] ?? 'Unspecified';
                     $position = Position::firstOrCreate(['name' => $positionName]);
 
+                    // Handle facility relationship
+                    $facility = null;
+                    if (!empty($entry['facility_id']) && !empty($entry['facility'])) {
+                        $facility = Facility::updateOrCreate(
+                            ['facility_id' => $entry['facility_id']],
+                            [
+                                'name' => $entry['facility'],
+                                'district' => $entry['district'],
+                                'region' => $entry['region'] ?? null,
+                                'is_active' => true,
+                            ]
+                        );
+                    }
+
                     // Create full name
                     $fullName = trim(sprintf('%s %s %s',
                         $entry['surname'],
@@ -89,6 +104,7 @@ class ImportEmployeesCommand extends Command
                             'email' => $entry['email'] ?? null,
                             'dob' => $dob,
                             'nid' => $entry['nin'] ?? null,
+                            'facility_id' => $facility ? $facility->id : null,
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]

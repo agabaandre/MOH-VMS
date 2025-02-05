@@ -25,12 +25,45 @@
             </tr>
             <tr>
                 <th>
-                    <label for="description" class="">
-                        @localize('description')
+                    <label for="facility_id" class="">
+                        @localize('iHRIS Facility ID')
                     </label>
                 </th>
                 <td>
-                    <textarea class="form-control" name="description" id="description" placeholder="@localize('description')">{{ isset($item) ? $item->description : old('description') }}</textarea>
+                    <input type="text" class="form-control" name="facility_id" id="facility_id"
+                        value="{{ isset($item) ? $item->facility_id : old('facility_id') }}" placeholder="@localize('iHRIS ID')">
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="district" class="">
+                        @localize('District')
+                    </label>
+                </th>
+                <td>
+                    <input type="text" class="form-control" name="district" id="district"
+                        value="{{ isset($item) ? $item->district : old('district') }}" placeholder="@localize('District')">
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="region" class="">
+                        @localize('Region')
+                    </label>
+                </th>
+                <td>
+                    <input type="text" class="form-control" name="region" id="region"
+                        value="{{ isset($item) ? $item->region : old('region') }}" placeholder="@localize('Region')">
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="description" class="">
+                        @localize('Description')
+                    </label>
+                </th>
+                <td>
+                    <textarea class="form-control" name="description" id="description" placeholder="@localize('Description')">{{ isset($item) ? $item->description : old('description') }}</textarea>
                 </td>
             </tr>
             <tr>

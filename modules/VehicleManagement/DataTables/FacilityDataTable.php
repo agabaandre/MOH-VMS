@@ -77,8 +77,11 @@ class FacilityDataTable extends DataTable
         return [
             Column::make('DT_RowIndex')->title(localize('SL'))->searchable(false)->orderable(false)->width(30)->addClass('text-center'),
             Column::make('name')->title(localize('Name'))->defaultContent('N/A'),
-            Column::make('description')->title(localize('description'))->defaultContent('N/A'),
-            Column::make('is_active')->title(localize('status')),
+            Column::make('facility_id')->title(localize('iHRIS Facility ID'))->defaultContent('N/A'),
+            Column::make('district')->title(localize('District'))->defaultContent('N/A'),
+            Column::make('region')->title(localize('Region'))->defaultContent('N/A'),
+            Column::make('description')->title(localize('Description'))->defaultContent('N/A'),
+            Column::make('is_active')->title(localize('Status')),
             Column::make('created_at')->title(localize('Created'))->defaultContent('N/A'),
             Column::make('updated_at')->title(localize('Updated'))->defaultContent('N/A'),
             Column::computed('action')
