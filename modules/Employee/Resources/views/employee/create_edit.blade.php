@@ -45,23 +45,6 @@
                             value="{{ isset($item) ? $item->email : old('email') }}">
                     </div>
                 </div>
-                <div class="form-group row my-2">
-                    <label for="email2" class="col-sm-5 col-form-label">@localize('Email Optional') </label>
-                    <div class="col-sm-7">
-                        <input name="email2" class="form-control" type="email" placeholder="@localize('Email Optional')"
-                            id="email2" value="{{ isset($item) ? $item->email2 : old('email2') }}">
-                    </div>
-                </div>
-                
-
-                <div class="form-group row my-2">
-                    <label for="working_slot_from" class="col-sm-5 col-form-label">@localize('Working Slot From') </label>
-                    <div class="col-sm-7">
-                        <input name="working_slot_from" class="form-control ttimepicker" type="text"
-                            placeholder="@localize('Working Slot From')" id="working_slot_from"
-                            value="{{ isset($item) ? $item->working_slot_from : old('working_slot_from') }}">
-                    </div>
-                </div>
                 
                 <div class="form-group row my-2">
                     <label for="present_cont" class="col-sm-5 col-form-label">@localize('Present Contact Number') </label>
@@ -149,69 +132,12 @@
                     </div>
                 </div>
                 <div class="form-group row my-2">
-                    <label for="phone2" class="col-sm-5 col-form-label">@localize('Employee Mobile Optional') </label>
-                    <div class="col-sm-7">
-                        <input name="phone2" class="form-control" type="number" placeholder="@localize('Employee Mobile Optional')"
-                            id="phone2" value="{{ isset($item) ? $item->phone2 : old('phone2') }}">
-                    </div>
-                </div>
-                <div class="form-group row my-2">
-                    <label for="join_date" class="col-sm-5 col-form-label">@localize('Join Date') <i
-                            class="text-danger">*</i></label>
-                    <div class="col-sm-7">
-                        <input name="join_date" required autocomplete="off" class="form-control" type="date"
-                            placeholder="@localize('Join Date')" id="join_date"
-                            value="{{ isset($item) ? $item->join_date : old('join_date') }}">
-                    </div>
-                </div>
-                <div class="form-group row my-2">
                     <label for="dob" class="col-sm-5 col-form-label">@localize('Date of Birth') <i
                             class="text-danger">*</i></label>
                     <div class="col-sm-7">
                         <input name="dob" required autocomplete="off" class="form-control" type="date"
                             placeholder="@localize('Date of Birth')" id="dob"
                             value="{{ isset($item) ? $item->dob : old('dob') }}">
-                    </div>
-                </div>
-                <div class="form-group row my-2">
-                    <label for="working_slot_to" class="col-sm-5 col-form-label">@localize('Working Slot To') </label>
-                    <div class="col-sm-7">
-                        <input name="working_slot_to" class="form-control ttimepicker" type="text"
-                            placeholder="@localize('Working Slot To')" id="working_slot_to"
-                            value="{{ isset($item) ? $item->working_slot_to : old('working_slot_to') }}">
-                    </div>
-                </div>
-               
-                <div class="form-group row my-2">
-                    <label for="permanent_contact" class="col-sm-5 col-form-label">@localize('Permanent Contact Number') </label>
-                    <div class="col-sm-7">
-                        <input name="permanent_contact" class="form-control" type="text"
-                            placeholder="@localize('Permanent Contact Number')" id="permanent_contact"
-                            value="{{ isset($item) ? $item->permanent_contact : old('permanent_contact') }}">
-                    </div>
-                </div>
-                <div class="form-group row my-2">
-                    <label for="permanent_address" class="col-sm-5 col-form-label">@localize('Permanent Address') </label>
-                    <div class="col-sm-7">
-                        <input name="permanent_address" class="form-control" type="text"
-                            placeholder="@localize('Permanent Address')" id="permanent_address"
-                            value="{{ isset($item) ? $item->permanent_address : old('permanent_address') }}">
-                    </div>
-                </div>
-                <div class="form-group row my-2">
-                    <label for="permanent_city" class="col-sm-5 col-form-label">@localize('Permanent City') </label>
-                    <div class="col-sm-7">
-                        <input name="permanent_city" class="form-control" type="text"
-                            placeholder="@localize('Permanent City')" id="permanent_city"
-                            value="{{ isset($item) ? $item->permanent_city : old('permanent_city') }}">
-                    </div>
-                </div>
-                <div class="form-group row my-2">
-                    <label for="ref_mobile" class="col-sm-5 col-form-label">@localize('Reference Mobile') </label>
-                    <div class="col-sm-7">
-                        <input name="reference_mobile" class="form-control" type="number"
-                            placeholder="@localize('Reference Mobile')" id="ref_mobile"
-                            value="{{ isset($item) ? $item->reference_mobile : old('reference_mobile') }}">
                     </div>
                 </div>
                 <div class="form-group row my-2">
