@@ -47,6 +47,8 @@ class VehicleController extends Controller
             'vehicle_types' => VehicleType::where('is_active', true)->get(),
             'ownerships' => VehicleOwnershipType::where('is_active', true)->get(),
             'vendors' => Vendor::where('is_active', true)->get(),
+            'drivers' => Driver::where('is_active', true)->get(),
+            'circle_offices' => Facility::where('is_active', true)->get(),
         ]);
     }
 
@@ -141,7 +143,22 @@ class VehicleController extends Controller
             'driver_id' => 'nullable|integer',
             'vendor_id' => 'nullable|integer',
             'seat_capacity' => 'nullable|integer',
+            'is_active' => 'required|boolean',
+            'off_board_date' => 'required_if:is_active,0|nullable|date',
+            'off_board_remarks' => 'required_if:is_active,0|nullable|string',
         ]);
+
+        // If vehicle is being off-boarded
+        if (!$data['is_active'] && $vehicle->is_active) {
+            $data['off_board_date'] = $request->off_board_date;
+            $data['off_board_remarks'] = $request->off_board_remarks;
+        }
+
+        // If vehicle is being reactivated
+        if ($data['is_active'] && !$vehicle->is_active) {
+            $data['off_board_date'] = null;
+            $data['off_board_remarks'] = null;
+        }
 
         // Handle image upload
         if ($request->hasFile('image')) {

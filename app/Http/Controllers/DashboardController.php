@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Modules\Employee\Entities\Driver;
+use Modules\Employee\Entities\Employee;
 use Modules\Inventory\Entities\Expense;
 use Modules\Inventory\Entities\InventoryParts;
 use Modules\Purchase\Entities\PurchaseDetail;
@@ -13,6 +15,7 @@ use Modules\VehicleManagement\Entities\LegalDocumentation;
 use Modules\VehicleManagement\Entities\PickupAndDrop;
 use Modules\VehicleManagement\Entities\VehicleRequisition;
 use Modules\VehicleRefueling\Entities\FuelRequisition;
+use Modules\VehicleManagement\Entities\Vehicle;
 
 class DashboardController extends Controller
 {
@@ -73,6 +76,15 @@ class DashboardController extends Controller
 
         $reminders = LegalDocumentation::with(['vehicle', 'document_type'])->paginate(15);
 
+        $totalDrivers = Driver::count(); // Add this line
+        $totalEmployees = Employee::count(); // Add this line
+
+        $vehicleStats = [
+            'total' => Vehicle::count(),
+            'active' => Vehicle::where('is_active', true)->count(),
+            'offboarded' => Vehicle::where('is_active', false)->count()
+        ];
+
         return view('dashboard', [
             'total_requisitions' => $total_requisitions,
             'total_maintenances' => $total_maintenances,
@@ -87,6 +99,9 @@ class DashboardController extends Controller
             'totalStockIn' => $totalStockIn,
             'totalStockOut' => $totalStockOut,
             'data' => $data,
+            'totalDrivers' => $totalDrivers, // Add this line
+            'totalEmployees' => $totalEmployees, // Add this line
+            'vehicleStats' => $vehicleStats,
         ]);
     }
 

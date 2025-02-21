@@ -26,6 +26,14 @@ class Vehicle extends Model
         'driver_id',
         'vendor_id',
         'seat_capacity',
+        'is_active',
+        'off_board_date',
+        'off_board_remarks',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'off_board_date' => 'date',
     ];
 
     protected static function newFactory()

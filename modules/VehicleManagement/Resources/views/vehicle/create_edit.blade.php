@@ -175,6 +175,33 @@
                             value="{{ isset($item) ? $item->seat_capacity : old('seat_capacity') }}" required>
                     </div>
                 </div>
+
+                <div class="form-group row my-2">
+                    <label for="is_active" class="col-sm-5 col-form-label">@localize('Status')</label>
+                    <div class="col-sm-7">
+                        <select class="form-control" name="is_active" id="is_active">
+                            <option value="1" {{ isset($item) && $item->is_active ? 'selected' : '' }}>@localize('Active')</option>
+                            <option value="0" {{ isset($item) && !$item->is_active ? 'selected' : '' }}>@localize('Off-Board')</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="offboard-fields" style="display: {{ isset($item) && !$item->is_active ? 'block' : 'none' }}">
+                    <div class="form-group row my-2">
+                        <label for="off_board_date" class="col-sm-5 col-form-label">@localize('Off-Board Date')</label>
+                        <div class="col-sm-7">
+                            <input type="date" class="form-control" name="off_board_date" id="off_board_date" 
+                                value="{{ isset($item) ? $item->off_board_date?->format('Y-m-d') : '' }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row my-2">
+                        <label for="off_board_remarks" class="col-sm-5 col-form-label">@localize('Off-Board Remarks')</label>
+                        <div class="col-sm-7">
+                            <textarea class="form-control" name="off_board_remarks" id="off_board_remarks" rows="3">{{ isset($item) ? $item->off_board_remarks : '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -183,3 +210,21 @@
         <button class="btn btn-success" type="submit">@localize('Save')</button>
     </div>
 </form>
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#is_active').on('change', function() {
+            if ($(this).val() == '0') {
+                $('.offboard-fields').show();
+                $('#off_board_date').prop('required', true);
+                $('#off_board_remarks').prop('required', true);
+            } else {
+                $('.offboard-fields').hide();
+                $('#off_board_date').prop('required', false);
+                $('#off_board_remarks').prop('required', false);
+            }
+        });
+    });
+</script>
+@endpush

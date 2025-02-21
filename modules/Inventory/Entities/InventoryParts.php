@@ -24,6 +24,7 @@ class InventoryParts extends Model
         'name',
         'description',
         'qty',
+        'unit_id',
         'remarks',
         'is_active',
     ];
@@ -61,5 +62,10 @@ class InventoryParts extends Model
     public function vehicleMaintenanceDetails()
     {
         return $this->hasMany(VehicleMaintenanceDetail::class, 'parts_id');
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(InventoryUnit::class, 'unit_id');
     }
 }

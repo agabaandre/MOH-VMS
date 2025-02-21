@@ -17,7 +17,6 @@ class LegalDocumentation extends Model
         'expiry_date',
         'charge_paid',
         'vendor_id',
-        'commission',
         'notify_before',
         'email',
         'document_file_path',

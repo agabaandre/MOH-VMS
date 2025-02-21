@@ -41,15 +41,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row my-2">
-                    <label for="working_time_slot" class="col-sm-5 col-form-label">@localize('Working Time Slot') <i
-                            class="text-danger">*</i></label>
-                    <div class="col-sm-7">
-                        <input name="working_time_slot" required class="form-control" type="text"
-                            placeholder="10:00AM-6:00PM" id="working_time_slot"
-                            value="{{ isset($item) ? $item->working_time_slot : old('working_time_slot') }}">
-                    </div>
-                </div>
+                
 
                 <div class="form-group row my-2">
                     <label for="dob" class="col-sm-5 col-form-label">@localize('Date of Birth') <i

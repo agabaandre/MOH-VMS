@@ -34,6 +34,7 @@ Route::prefix('admin')->as('admin.')->group(function () {
     });
 
     Route::prefix('/employee')->as('employee.')->group(function () {
+        Route::post('/import', [EmployeeController::class, 'import'])->name('import');
         Route::resource('/', EmployeeController::class)->except(['show'])->parameter('', 'employee');
     });
 

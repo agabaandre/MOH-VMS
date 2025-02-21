@@ -30,7 +30,7 @@ class InventoryPartsDataTable extends DataTable
                 return $button;
             })
             ->editColumn('is_active', function ($query) {
-                return $query->is_active == 1 ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
+                return $query->is_active == 1 ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive';
             })
             ->setRowId('id')
             ->addIndexColumn()
@@ -42,7 +42,7 @@ class InventoryPartsDataTable extends DataTable
      */
     public function query(InventoryParts $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->with('unit');
     }
 
     /**
@@ -78,7 +78,9 @@ class InventoryPartsDataTable extends DataTable
         return [
             Column::make('DT_RowIndex')->title(localize('SL'))->searchable(false)->orderable(false)->width(30)->addClass('text-center'),
             Column::make('name')->title(localize('Name'))->defaultContent('N/A'),
-            Column::make('is_active')->title(localize('status')),
+            Column::make('qty')->title(localize('Quantity'))->defaultContent('0'),
+            Column::make('unit.abbreviation')->title(localize('Unit'))->defaultContent('N/A'),
+            Column::make('is_active')->title(localize('Status')),
             Column::make('created_at')->title(localize('Created'))->defaultContent('N/A'),
             Column::make('updated_at')->title(localize('Updated'))->defaultContent('N/A'),
             Column::computed('action')

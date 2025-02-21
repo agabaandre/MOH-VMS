@@ -60,6 +60,24 @@ class VehicleDataTable extends DataTable
         $date_to = $this->request()->get('date_to');
 
         $query = $model->newQuery()
+            ->select([
+                'vehicles.id',
+                'vehicles.name',
+                'vehicles.image',
+                'vehicles.department_id',
+                'vehicles.registration_date',
+                'vehicles.license_plate',
+                'vehicles.previous_plate',
+                'vehicles.ownership_id',
+                'vehicles.vehicle_type_id',
+                'vehicles.vehicle_division_id',
+                'vehicles.rta_circle_office_id',
+                'vehicles.driver_id',
+                'vehicles.vendor_id',
+                'vehicles.seat_capacity',
+                'vehicles.is_active',
+            ])
+            ->where('is_active', true)  // Add this line to filter active vehicles
             ->when($department, function ($query) use ($department) {
                 $query->where('department_id', $department);
             })
@@ -120,6 +138,13 @@ class VehicleDataTable extends DataTable
             Column::make('registration_date')->title(localize('Registration Date'))->defaultContent('N/A'),
             Column::make('ownership_id')->title(localize('Ownership'))->defaultContent('N/A'),
             Column::make('vendor_id')->title(localize('Vendor')),
+            Column::make('image')->title(localize('Image'))->defaultContent('N/A'),
+            Column::make('license_plate')->title(localize('License Plate'))->defaultContent('N/A'),
+            Column::make('previous_plate')->title(localize('Previous Plate'))->defaultContent('N/A'),
+            Column::make('vehicle_division_id')->title(localize('Vehicle Division'))->defaultContent('N/A'),
+            Column::make('rta_circle_office_id')->title(localize('RTA Circle Office'))->defaultContent('N/A'),
+            Column::make('driver_id')->title(localize('Driver'))->defaultContent('N/A'),
+            Column::make('seat_capacity')->title(localize('Seat Capacity'))->defaultContent('N/A'),
             Column::computed('action')
                 ->title(localize('Action'))
                 ->searchable(false)

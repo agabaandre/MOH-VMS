@@ -5,7 +5,7 @@
                 <a class="btn btn-success btn-sm" href="javascript:void(0);"
                     onclick="axiosModal('{{ route(\config('theme.rprefix') . '.create') }}')">
                     <i class="fa fa-plus"></i>
-                    {{ localize('Add Legal Documentation') }}
+                    {{ localize('Add Vehicle Documents') }}
                 </a>
 
                 <button type="button" class="btn btn-success btn-sm mx-2" data-bs-toggle="collapse"

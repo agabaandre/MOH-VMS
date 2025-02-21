@@ -71,6 +71,24 @@
             </tr>
             <tr>
                 <th>
+                    <label for="unit_id" class="">
+                        @localize('Unit')
+                        <span class="text-danger">*</span>
+                    </label>
+                </th>
+                <td>
+                    <select class="form-control" name="unit_id" id="unit_id" required>
+                        <option value="">@localize('Select Unit')</option>
+                        @foreach ($units as $unit)
+                            <option value="{{ $unit->id }}" @if (isset($item) && $item->unit_id == $unit->id) selected @endif>
+                                {{ $unit->name }} ({{ $unit->abbreviation }})
+                            </option>
+                        @endforeach
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>
                     <label for="description" class="">
                         @localize('description')
                     </label>

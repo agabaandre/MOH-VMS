@@ -86,7 +86,6 @@ class DriverDataTable extends DataTable
             Column::make('phone')->title(localize('Mobile'))->defaultContent('N/A'),
             Column::make('license_num')->title(localize('License Number'))->defaultContent('N/A'),
             Column::make('nid')->title(localize('NID'))->defaultContent('N/A'),
-            // Column::make('working_time_slot')->title(localize('Working Time Slot'))->defaultContent('N/A'),
             Column::make('is_active')->title(localize('Status'))->defaultContent('N/A'),
             Column::computed('action')->title(localize('Action'))
                 ->orderable(false)

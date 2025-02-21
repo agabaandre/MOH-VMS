@@ -20,7 +20,6 @@ class VehicleDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-
             ->editColumn('vehicle_type_id', function ($query) {
                 return $query->vehicle_type?->name ?? 'N/A';
             })
@@ -31,31 +30,41 @@ class VehicleDataTable extends DataTable
             })
             ->editColumn('department_id', function ($query) {
                 return $query->department?->name ?? 'N/A';
-            })->filterColumn('department_id', function ($query, $keyword) {
+            })
+            ->filterColumn('department_id', function ($query, $keyword) {
                 $query->whereHas('department', function ($query) use ($keyword) {
                     $query->where('name', 'like', '%'.$keyword.'%');
                 });
-            })->orderColumn('department_id', function ($query, $order) {
+            })
+            ->orderColumn('department_id', function ($query, $order) {
                 $query->orderBy('department_id', $order);
             })
             ->editColumn('vendor_id', function ($query) {
                 return $query->vendor?->name ?? 'N/A';
-            })->filterColumn('vendor_id', function ($query, $keyword) {
+            })
+            ->filterColumn('vendor_id', function ($query, $keyword) {
                 $query->whereHas('vendor', function ($query) use ($keyword) {
                     $query->where('name', 'like', '%'.$keyword.'%');
                 });
-            })->orderColumn('vendor_id', function ($query, $order) {
+            })
+            ->orderColumn('vendor_id', function ($query, $order) {
                 $query->orderBy('vendor_id', $order);
             })
             ->editColumn('ownership_id', function ($query) {
                 return $query->ownership?->name ?? 'N/A';
-            })->filterColumn('ownership_id', function ($query, $keyword) {
+            })
+            ->filterColumn('ownership_id', function ($query, $keyword) {
                 $query->whereHas('ownership', function ($query) use ($keyword) {
                     $query->where('name', 'like', '%'.$keyword.'%');
                 });
-            })->orderColumn('ownership_id', function ($query, $order) {
+            })
+            ->orderColumn('ownership_id', function ($query, $order) {
                 $query->orderBy('ownership_id', $order);
             })
+            ->editColumn('image', function ($query) {
+                return '<img src="'.asset($query->image).'" alt="Vehicle Image" width="50" height="50">';
+            })
+            ->rawColumns(['image'])
             ->setRowId('id')
             ->addIndexColumn();
     }
@@ -65,7 +74,6 @@ class VehicleDataTable extends DataTable
      */
     public function query(Vehicle $model): QueryBuilder
     {
-
         $department = $this->request()->get('department_id');
         $vehicle_type = $this->request()->get('vehicle_type_id');
         $ownership = $this->request()->get('ownership_id');
@@ -134,6 +142,13 @@ class VehicleDataTable extends DataTable
             Column::make('registration_date')->title(localize('Registration Date'))->defaultContent('N/A'),
             Column::make('ownership_id')->title(localize('Ownership'))->defaultContent('N/A'),
             Column::make('vendor_id')->title(localize('Vendor')),
+            Column::make('image')->title(localize('Image'))->defaultContent('N/A'),
+            Column::make('license_plate')->title(localize('License Plate'))->defaultContent('N/A'),
+            Column::make('previous_plate')->title(localize('Previous Plate'))->defaultContent('N/A'),
+            Column::make('vehicle_division_id')->title(localize('Vehicle Division'))->defaultContent('N/A'),
+            Column::make('rta_circle_office_id')->title(localize('RTA Circle Office'))->defaultContent('N/A'),
+            Column::make('driver_id')->title(localize('Driver'))->defaultContent('N/A'),
+            Column::make('seat_capacity')->title(localize('Seat Capacity'))->defaultContent('N/A'),
         ];
     }
 

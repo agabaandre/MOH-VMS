@@ -56,11 +56,10 @@
                 </div>
 
                 <div class="form-group row my-2">
-                    <label for="expiry_date" class="col-sm-5 col-form-label">@localize('Expire Date') <i
-                            class="text-danger">*</i> </label>
+                    <label for="expiry_date" class="col-sm-5 col-form-label">@localize('Expire Date')</label>
                     <div class="col-sm-7">
                         <input name="expiry_date" class="form-control " type="date" placeholder="@localize('Expire Date')"
-                            required id="expiry_date"
+                            id="expiry_date"
                             value="{{ isset($item) ? $item->expiry_date : old('expiry_date') }}">
                     </div>
                 </div>
@@ -94,18 +93,6 @@
                                 </option>
                             @endforeach
                         </select>
-                    </div>
-                </div>
-
-                <div class="form-group row my-2">
-                    <label for="commission" class="col-sm-5 col-form-label">@localize('Commission')
-                        <i class="text-danger">*</i></label>
-                    </label>
-
-                    <div class="col-sm-7">
-                        <input name="commission" required class="form-control" type="number" step="any"
-                            placeholder="@localize('Commission')" id="commission"
-                            value="{{ isset($item) ? $item->commission : old('commission') }}" required>
                     </div>
                 </div>
 

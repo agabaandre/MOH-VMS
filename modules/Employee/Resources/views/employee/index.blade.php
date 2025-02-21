@@ -8,6 +8,12 @@
                     {{ localize('Add Employee') }}
                 </a>
 
+                <a class="btn btn-primary btn-sm mx-2" href="javascript:void(0);"
+                    onclick="confirmImport('{{ route(\config('theme.rprefix') . '.import') }}')">
+                    <i class="fas fa-file-import"></i>&nbsp;
+                    {{ localize('Import Employees') }}
+                </a>
+
                 <button type="button" class="btn btn-success btn-sm mx-2" data-bs-toggle="collapse"
                     data-bs-target="#flush-collapseOne" aria-expanded="true" aria-controls="flush-collapseOne"> <i
                         class="fas fa-filter"></i> @localize('Filter')</button>
@@ -78,4 +84,41 @@
         </div>
     </x-card>
 
+@push('js')
+    <script type="module">
+        "use strict";
+        
+        // Import confirmation handler
+        window.confirmImport = function(url) {
+            Swal.fire({
+                title: '{{ localize("Confirm Import") }}',
+                text: '{{ localize("Are you sure you want to import employees from HRIS?") }}',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '{{ localize("Yes, import!") }}',
+                cancelButtonText: '{{ localize("Cancel") }}'
+            }).then((result) => {
+                console.log(result);
+                if (result.isConfirmed) {
+                    console.log(url);
+                    axios.post(url)
+                        .then(function (response) {
+                            console.log(response)
+                            if (response.data.success) {
+                                toastr.success(response.data.message);
+                                window.location.reload();
+                            } else {
+                                toastr.error(response.data.message);
+                            }
+                        })
+                        .catch(function (error) {
+                            toastr.error('{{ localize("An error occurred during import") }}');
+                        });
+                }
+            });
+        };
+    </script>
+@endpush
 </x-app-layout>

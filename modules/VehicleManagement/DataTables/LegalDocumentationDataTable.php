@@ -119,7 +119,6 @@ class LegalDocumentationDataTable extends DataTable
             Column::make('expiry_date')->title(localize('Expiry Date'))->defaultContent('N/A'),
             Column::make('charge_paid')->title(localize('Charge Paid'))->defaultContent('N/A'),
             Column::make('vendor_id')->title(localize('Vendor'))->defaultContent('N/A'),
-            Column::make('commission')->title(localize('Commission'))->defaultContent('N/A'),
             Column::computed('action')
                 ->title(localize('Action'))
                 ->searchable(false)

@@ -17,8 +17,6 @@ return new class extends Migration
             
             // Drop columns
             $table->dropColumn([
-                'working_slot_from',
-                'working_slot_to',
                 'join_date',
                 'permanent_contact',
                 'permanent_city',
@@ -40,8 +38,6 @@ return new class extends Migration
             $table->string('email')->nullable()->change();
             
             // Add back removed columns
-            $table->string('working_slot_from')->nullable();
-            $table->string('working_slot_to')->nullable();
             $table->date('join_date')->nullable();
             $table->string('permanent_contact')->nullable();
             $table->string('permanent_city')->nullable();

@@ -8,6 +8,7 @@ use Modules\Inventory\DataTables\InventoryPartsDataTable;
 use Modules\Inventory\Entities\InventoryCategory;
 use Modules\Inventory\Entities\InventoryLocation;
 use Modules\Inventory\Entities\InventoryParts;
+use Modules\Inventory\Entities\InventoryUnit;
 
 class InventoryPartsController extends Controller
 {
@@ -64,8 +65,9 @@ class InventoryPartsController extends Controller
         ]);
         $categories = InventoryCategory::where('is_active', 1)->get();
         $locations = InventoryLocation::where('is_active', 1)->get();
+        $units = InventoryUnit::where('is_active', 1)->get();
 
-        return view('inventory::parts.create_edit', compact('categories', 'locations'))->render();
+        return view('inventory::parts.create_edit', compact('categories', 'locations', 'units'))->render();
     }
 
     /**
@@ -81,6 +83,7 @@ class InventoryPartsController extends Controller
             'name' => 'required|string|max:255|unique:inventory_parts,name',
             'description' => 'nullable|string',
             'qty' => 'integer|min:0',
+            'unit_id' => 'required|integer|exists:inventory_units,id',
             'remarks' => 'nullable|string',
             'is_active' => 'required|boolean',
         ]);
@@ -102,11 +105,13 @@ class InventoryPartsController extends Controller
 
         $categories = InventoryCategory::where('is_active', 1)->get();
         $locations = InventoryLocation::where('is_active', 1)->get();
+        $units = InventoryUnit::where('is_active', 1)->get();
 
         return view('inventory::parts.create_edit', [
             'item' => $parts,
             'categories' => $categories,
             'locations' => $locations,
+            'units' => $units,
         ])->render();
     }
 
@@ -123,6 +128,7 @@ class InventoryPartsController extends Controller
             'name' => 'required|string|max:255|unique:inventory_parts,name,' . $parts->id . ',id',
             'description' => 'nullable|string',
             'qty' => 'integer|min:0',
+            'unit_id' => 'required|integer|exists:inventory_units,id',
             'remarks' => 'nullable|string',
             'is_active' => 'required|boolean',
         ]);

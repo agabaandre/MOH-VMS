@@ -142,8 +142,6 @@ CREATE TABLE `employees` (
   `phone2` varchar(120) DEFAULT NULL,
   `join_date` date DEFAULT NULL,
   `dob` date DEFAULT NULL,
-  `working_slot_from` varchar(120) DEFAULT NULL,
-  `working_slot_to` varchar(120) DEFAULT NULL,
   `present_contact` varchar(120) DEFAULT NULL,
   `present_address` varchar(120) DEFAULT NULL,
   `permanent_contact` varchar(120) DEFAULT NULL,

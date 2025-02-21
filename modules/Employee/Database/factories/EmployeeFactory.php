@@ -32,8 +32,6 @@ class EmployeeFactory extends Factory
             'join_date' => $this->faker->date(),
             'blood_group' => $this->faker->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
             'dob' => $this->faker->date(),
-            'working_slot_from' => $this->faker->time(),
-            'working_slot_to' => $this->faker->time(),
             'present_contact' => $this->faker->phoneNumber,
             'present_address' => $this->faker->address,
             'permanent_contact' => $this->faker->phoneNumber,

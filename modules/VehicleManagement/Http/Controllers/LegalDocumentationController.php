@@ -18,7 +18,7 @@ class LegalDocumentationController extends Controller
         $this->middleware('request:ajax', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
         $this->middleware('strip_scripts_tag')->only(['store', 'update']);
         \cs_set('theme', [
-            'title' => 'Legal Documentation Details',
+            'title' => 'Vehicle Documents Details',
             'back' => \back_url(),
             'breadcrumb' => [
                 [
@@ -26,7 +26,7 @@ class LegalDocumentationController extends Controller
                     'link' => route('admin.dashboard'),
                 ],
                 [
-                    'name' => 'Legal Documentation Details',
+                    'name' => 'Vehicle Documents Details',
                     'link' => false,
                 ],
             ],
@@ -75,7 +75,6 @@ class LegalDocumentationController extends Controller
             'expiry_date' => 'nullable|date',
             'charge_paid' => 'nullable|numeric',
             'vendor_id' => 'nullable|integer',
-            'commission' => 'nullable|numeric',
             'notify_before' => 'nullable|integer',
             'email' => 'nullable|email',
         ]);
@@ -86,7 +85,7 @@ class LegalDocumentationController extends Controller
 
         $item = LegalDocumentation::create($data);
 
-        return response()->success($item, localize('Legal Documentation Added Successfully'), 201);
+        return response()->success($item, localize('Vehicle Documents Added Successfully'), 201);
     }
 
     /**
@@ -115,7 +114,6 @@ class LegalDocumentationController extends Controller
             'expiry_date' => 'nullable|date',
             'charge_paid' => 'nullable|numeric',
             'vendor_id' => 'nullable|integer',
-            'commission' => 'nullable|numeric',
             'notify_before' => 'nullable|integer',
             'email' => 'nullable|email',
         ]);
@@ -130,7 +128,7 @@ class LegalDocumentationController extends Controller
 
         $legal_document->update($data);
 
-        return response()->success($legal_document, localize('Legal Documentation Updated Successfully'), 200);
+        return response()->success($legal_document, localize('Vehicle Documents Updated Successfully'), 200);
     }
 
     /**
@@ -146,6 +144,6 @@ class LegalDocumentationController extends Controller
         }
 
         $legal_document->delete();
-        return response()->success($legal_document, localize('Legal Documentation Deleted Successfully'), 200);
+        return response()->success($legal_document, localize('Vehicle Documents Deleted Successfully'), 200);
     }
 }

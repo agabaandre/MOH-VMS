@@ -27,8 +27,6 @@ return new class() extends Migration
             $table->date('join_date')->nullable();
             $table->string('blood_group')->nullable();
             $table->date('dob')->nullable();
-            $table->string('working_slot_from')->nullable();
-            $table->string('working_slot_to')->nullable();
             $table->string('present_contact')->nullable();
             $table->string('present_address')->nullable();
             $table->string('permanent_contact')->nullable();

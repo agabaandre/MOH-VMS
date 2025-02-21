@@ -4,6 +4,7 @@ namespace Modules\Employee\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Artisan;
 use Modules\Employee\DataTables\EmployeeDataTable;
 use Modules\Employee\Entities\Department;
 use Modules\Employee\Entities\Employee;
@@ -144,5 +145,34 @@ class EmployeeController extends Controller
     {
         $employee->delete();
         return response()->success(null, localize('Employee Deleted Successfully'), 200);
+    }
+
+    /**
+     * Import employees from HRIS API
+     */
+    public function import()
+    {
+        try {
+            Artisan::call('import:employees');
+            $output = Artisan::output();
+            
+            // Log the output for debugging
+            \Log::info('Import employees command output:', ['output' => $output]);
+
+            return response()->json([
+                'success' => true,
+                'message' => localize('Employees imported successfully')
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Employee import failed:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => localize('Failed to import employees')
+            ], 500);
+        }
     }
 }
