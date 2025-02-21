@@ -36,14 +36,54 @@ class ImportEmployeesCommand extends Command
         return $data;
     }
 
+    protected function deleteInvalidRecords(): int
+    {
+        $this->info("Deleting invalid records...");
+        
+        $query = Employee::query()
+            ->where(function($q) {
+                $q->whereNull('nid')
+                    ->orWhere('nid', '');
+            });
+
+        // Get facility ID for Ministry of Health
+        $mohFacility = Facility::where('name', 'Ministry of Health')->first();
+        if ($mohFacility) {
+            $query->orWhere('facility_id', '!=', $mohFacility->id);
+        }
+
+        $count = $query->count();
+        
+        if ($count > 0) {
+            // Delete associated drivers first
+            Driver::whereIn('employee_id', $query->pluck('id'))->delete();
+            
+            // Then delete employees
+            $query->delete();
+            
+            $this->info("Deleted {$count} invalid records");
+            Log::info("Deleted invalid employee records", ['count' => $count]);
+        } else {
+            $this->info("No invalid records found");
+        }
+
+        return $count;
+    }
+
     public function handle()
     {
-        $startTime = microtime(true);
-        $batchSize = (int) $this->option('batch-size');
-
-        Log::info('Starting employee import process', ['batch_size' => $batchSize]);
-
         try {
+            // Delete invalid records first
+            $deletedCount = $this->deleteInvalidRecords();
+
+            $startTime = microtime(true);
+            $batchSize = (int) $this->option('batch-size');
+
+            Log::info('Starting employee import process', [
+                'batch_size' => $batchSize,
+                'records_deleted' => $deletedCount
+            ]);
+
             $this->info("Fetching data from HRIS API...");
             $data = $this->getDataFromApi();
             $totalEntries = count($data);
@@ -52,6 +92,11 @@ class ImportEmployeesCommand extends Command
             $successCount = 0;
             $errorCount = 0;
             $skippedCount = 0;
+            $skippedReasons = [
+                'missing_name' => 0,
+                'missing_nin' => 0,
+                'non_moh' => 0
+            ];
 
             $this->info("Starting import of {$totalEntries} employees in " . count($batches) . " batches...");
             $this->output->progressStart($totalEntries);
@@ -62,9 +107,20 @@ class ImportEmployeesCommand extends Command
 
                 try {
                     foreach ($batchData as $entry) {
+                        // Skip if missing name
                         if (empty($entry['surname']) || empty($entry['firstname'])) {
                             Log::warning('Skipped entry: Missing surname or firstname', $entry);
                             $skippedCount++;
+                            $skippedReasons['missing_name']++;
+                            $this->output->progressAdvance();
+                            continue;
+                        }
+
+                        // Skip if missing NIN
+                        if (empty($entry['nin'])) {
+                            Log::warning('Skipped entry: Missing National ID', $entry);
+                            $skippedCount++;
+                            $skippedReasons['missing_nin']++;
                             $this->output->progressAdvance();
                             continue;
                         }
@@ -130,7 +186,9 @@ class ImportEmployeesCommand extends Command
                 [
                     ['Successful', $successCount],
                     ['Failed', $errorCount],
-                    ['Skipped', $skippedCount],
+                    ['Skipped (Missing Name)', $skippedReasons['missing_name']],
+                    ['Skipped (Missing NIN)', $skippedReasons['missing_nin']],
+                    ['Skipped (Non-MOH)', $skippedReasons['non_moh']],
                     ['Total Processed', $successCount + $errorCount + $skippedCount],
                 ]
             );
@@ -139,6 +197,7 @@ class ImportEmployeesCommand extends Command
                 'success_count' => $successCount,
                 'error_count' => $errorCount,
                 'skipped_count' => $skippedCount,
+                'skipped_reasons' => $skippedReasons,
                 'total_processed' => $successCount + $errorCount + $skippedCount,
                 'duration_seconds' => $duration,
                 'batch_size' => $batchSize,
