@@ -32,14 +32,50 @@ class VehicleDataTable extends DataTable
             ->editColumn('vehicle_type_id', function ($query) {
                 return $query->vehicle_type?->name ?? 'N/A';
             })
+            ->filterColumn('vehicle_type_id', function ($query, $keyword) {
+                $query->whereHas('vehicle_type', function ($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%');
+                });
+            })
             ->editColumn('department_id', function ($query) {
                 return $query->department?->name ?? 'N/A';
+            })
+            ->filterColumn('department_id', function ($query, $keyword) {
+                $query->whereHas('department', function ($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%');
+                });
             })
             ->editColumn('vendor_id', function ($query) {
                 return $query->vendor?->name ?? 'N/A';
             })
+            ->filterColumn('vendor_id', function ($query, $keyword) {
+                $query->whereHas('vendor', function ($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%');
+                });
+            })
             ->editColumn('ownership_id', function ($query) {
                 return $query->ownership?->name ?? 'N/A';
+            })
+            ->filterColumn('ownership_id', function ($query, $keyword) {
+                $query->whereHas('ownership', function ($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%');
+                });
+            })
+            ->editColumn('driver_id', function ($query) {
+                return $query->driver?->name ?? 'N/A';
+            })
+            ->filterColumn('driver_id', function ($query, $keyword) {
+                $query->whereHas('driver', function ($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%');
+                });
+            })
+            ->editColumn('vehicle_division_id', function ($query) {
+                return $query->vehicle_division?->name ?? 'N/A';
+            })
+            ->filterColumn('vehicle_division_id', function ($query, $keyword) {
+                $query->whereHas('vehicle_division', function ($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%');
+                });
             })
             ->setRowId('id')
             ->addIndexColumn()
@@ -71,11 +107,18 @@ class VehicleDataTable extends DataTable
                 'vehicles.ownership_id',
                 'vehicles.vehicle_type_id',
                 'vehicles.vehicle_division_id',
-                'vehicles.rta_circle_office_id',
                 'vehicles.driver_id',
                 'vehicles.vendor_id',
                 'vehicles.seat_capacity',
                 'vehicles.is_active',
+            ])
+            ->with([
+                'driver',
+                'department',
+                'vehicle_type',
+                'ownership',
+                'vehicle_division',
+                'vendor'
             ])
             ->where('is_active', true)  // Add this line to filter active vehicles
             ->when($department, function ($query) use ($department) {
@@ -142,7 +185,6 @@ class VehicleDataTable extends DataTable
             Column::make('license_plate')->title(localize('License Plate'))->defaultContent('N/A'),
             Column::make('previous_plate')->title(localize('Previous Plate'))->defaultContent('N/A'),
             Column::make('vehicle_division_id')->title(localize('Vehicle Division'))->defaultContent('N/A'),
-            Column::make('rta_circle_office_id')->title(localize('RTA Circle Office'))->defaultContent('N/A'),
             Column::make('driver_id')->title(localize('Driver'))->defaultContent('N/A'),
             Column::make('seat_capacity')->title(localize('Seat Capacity'))->defaultContent('N/A'),
             Column::computed('action')

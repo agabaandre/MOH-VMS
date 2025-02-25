@@ -61,6 +61,22 @@ class VehicleDataTable extends DataTable
             ->orderColumn('ownership_id', function ($query, $order) {
                 $query->orderBy('ownership_id', $order);
             })
+            ->editColumn('driver_id', function ($query) {
+                return $query->driver?->name ?? 'N/A';
+            })
+            ->filterColumn('driver_id', function ($query, $keyword) {
+                $query->whereHas('driver', function ($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%');
+                });
+            })
+            ->editColumn('vehicle_division_id', function ($query) {
+                return $query->vehicle_division?->name ?? 'N/A';
+            })
+            ->filterColumn('vehicle_division_id', function ($query, $keyword) {
+                $query->whereHas('vehicle_division', function ($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%');
+                });
+            })
             ->editColumn('image', function ($query) {
                 return '<img src="'.asset($query->image).'" alt="Vehicle Image" width="50" height="50">';
             })
@@ -82,6 +98,30 @@ class VehicleDataTable extends DataTable
         $date_to = $this->request()->get('date_to');
 
         $query = $model->newQuery()
+            ->select([
+                'vehicles.id',
+                'vehicles.name',
+                'vehicles.image',
+                'vehicles.department_id',
+                'vehicles.registration_date',
+                'vehicles.license_plate', 
+                'vehicles.previous_plate',
+                'vehicles.ownership_id',
+                'vehicles.vehicle_type_id',
+                'vehicles.vehicle_division_id',
+                'vehicles.driver_id',
+                'vehicles.vendor_id',
+                'vehicles.seat_capacity',
+                'vehicles.is_active',
+            ])
+            ->with([
+                'driver',
+                'department',
+                'vehicle_type',
+                'ownership',
+                'vehicle_division',
+                'vendor'
+            ])
             ->when($department, function ($query) use ($department) {
                 $query->where('department_id', $department);
             })
@@ -146,7 +186,6 @@ class VehicleDataTable extends DataTable
             Column::make('license_plate')->title(localize('License Plate'))->defaultContent('N/A'),
             Column::make('previous_plate')->title(localize('Previous Plate'))->defaultContent('N/A'),
             Column::make('vehicle_division_id')->title(localize('Vehicle Division'))->defaultContent('N/A'),
-            Column::make('rta_circle_office_id')->title(localize('RTA Circle Office'))->defaultContent('N/A'),
             Column::make('driver_id')->title(localize('Driver'))->defaultContent('N/A'),
             Column::make('seat_capacity')->title(localize('Seat Capacity'))->defaultContent('N/A'),
         ];
