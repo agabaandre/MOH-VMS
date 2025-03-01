@@ -26,7 +26,7 @@
             position: relative; /* Added */
         }
         .logo {
-            width: 80px; /* Reduced from 100px */
+            width: 120px; /* Reduced from 100px */
             height: auto;
             margin-top: 5px; /* Added to align with text */
         }
