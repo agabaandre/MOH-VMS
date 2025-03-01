@@ -330,7 +330,8 @@ class VehicleMaintenanceController extends Controller
     {
         $item = VehicleMaintenance::with([
             'employee:id,name', 
-            'vehicle:id,name,plate_no,chassis_no,odometer_reading', 
+            'vehicle:id,name,license_plate,department_id', // Use existing fields
+            'vehicle.department:id,name',
             'maintenanceType:id,name',
             'details', 
             'details.category:id,name', 

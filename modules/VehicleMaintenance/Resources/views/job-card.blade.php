@@ -84,27 +84,27 @@
         </tr>
         <tr>
             <td><strong>Department:</strong></td>
-            <td>{{ $item->department ?? 'N/A' }}</td>
-            <td><strong>Odometer Mileage:</strong></td>
-            <td>{{ $item->vehicle->odometer_reading ?? 'N/A' }}</td>
+            <td>{{ $item->vehicle->department->name ?? 'N/A' }}</td>
+            <td><strong>Type:</strong></td>
+            <td>{{ $item->type ?? 'N/A' }}</td>
         </tr>
         <tr>
             <td><strong>Make and Model:</strong></td>
             <td>{{ $item->vehicle->name ?? 'N/A' }}</td>
-            <td><strong>Chassis #:</strong></td>
-            <td>{{ $item->vehicle->chassis_no ?? 'N/A' }}</td>
+            <td><strong>Priority:</strong></td>
+            <td>{{ ucfirst($item->priority) ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <td><strong>Contact Name:</strong></td>
-            <td>{{ $item->contact_name ?? 'N/A' }}</td>
-            <td><strong>Number Plate:</strong></td>
-            <td>{{ $item->vehicle->plate_no ?? 'N/A' }}</td>
+            <td><strong>Vehicle Registration:</strong></td>
+            <td>{{ $item->vehicle->license_plate ?? 'N/A' }}</td>
+            <td><strong>Status:</strong></td>
+            <td>{{ ucfirst($item->status) ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <td><strong>Mobile #:</strong></td>
-            <td>{{ $item->phone ?? 'N/A' }}</td>
-            <td><strong>Funding:</strong></td>
+            <td><strong>Charge Bear By:</strong></td>
             <td>{{ $item->charge_bear_by ?? 'N/A' }}</td>
+            <td><strong>Total Charge:</strong></td>
+            <td>{{ $item->charge ?? 'N/A' }}</td>
         </tr>
     </table>
 
