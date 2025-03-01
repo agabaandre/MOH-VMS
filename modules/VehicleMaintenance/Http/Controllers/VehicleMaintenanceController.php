@@ -328,7 +328,14 @@ class VehicleMaintenanceController extends Controller
      */
     public function export($id)
     {
-        $item = VehicleMaintenance::with('employee:id,name', 'vehicle:id,name', 'details', 'details.category:id,name', 'details.parts:id,name')->findOrFail($id);
+        $item = VehicleMaintenance::with([
+            'employee:id,name', 
+            'vehicle:id,name', 
+            'maintenanceType:id,name',
+            'details', 
+            'details.category:id,name', 
+            'details.parts:id,name'
+        ])->findOrFail($id);
         
         $pdf = PDF::loadView('vehiclemaintenance::job-card', compact('item'));
         

@@ -21,21 +21,27 @@
     <table class="details-table">
         <tr>
             <td><strong>Service Title:</strong></td>
-            <td>{{ $item->title }}</td>
+            <td>{{ $item->title ?? 'N/A' }}</td>
             <td><strong>Date:</strong></td>
-            <td>{{ $item->date }}</td>
+            <td>{{ $item->date ?? 'N/A' }}</td>
         </tr>
         <tr>
             <td><strong>Vehicle:</strong></td>
-            <td>{{ $item->vehicle->name }}</td>
+            <td>{{ $item->vehicle->name ?? 'N/A' }}</td>
             <td><strong>Priority:</strong></td>
-            <td>{{ ucfirst($item->priority) }}</td>
+            <td>{{ ucfirst($item->priority) ?? 'N/A' }}</td>
         </tr>
         <tr>
             <td><strong>Requisition For:</strong></td>
-            <td>{{ $item->employee->name }}</td>
+            <td>{{ $item->employee->name ?? 'N/A' }}</td>
             <td><strong>Status:</strong></td>
-            <td>{{ ucfirst($item->status) }}</td>
+            <td>{{ ucfirst($item->status) ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Maintenance Type:</strong></td>
+            <td>{{ $item->maintenanceType->name ?? 'N/A' }}</td>
+            <td><strong>Type:</strong></td>
+            <td>{{ ucfirst($item->type) ?? 'N/A' }}</td>
         </tr>
     </table>
 
@@ -52,11 +58,11 @@
         <tbody>
             @foreach ($item->details as $d)
             <tr>
-                <td>{{ $d->category->name }}</td>
-                <td>{{ $d->parts->name }}</td>
-                <td>{{ $d->qty }}</td>
-                <td>{{ $d->price }}</td>
-                <td>{{ $d->total }}</td>
+                <td>{{ $d->category->name ?? 'N/A' }}</td>
+                <td>{{ $d->parts->name ?? 'N/A' }}</td>
+                <td>{{ $d->qty ?? '0' }}</td>
+                <td>{{ $d->price ?? '0' }}</td>
+                <td>{{ $d->total ?? '0' }}</td>
             </tr>
             @endforeach
         </tbody>
