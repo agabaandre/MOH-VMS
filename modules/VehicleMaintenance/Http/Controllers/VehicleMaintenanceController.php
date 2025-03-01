@@ -330,7 +330,7 @@ class VehicleMaintenanceController extends Controller
     {
         $item = VehicleMaintenance::with([
             'employee:id,name', 
-            'vehicle:id,name,license_plate,department_id', // Use existing fields
+            'vehicle:id,name,license_plate,department_id',
             'vehicle.department:id,name',
             'maintenanceType:id,name',
             'details', 
@@ -340,7 +340,12 @@ class VehicleMaintenanceController extends Controller
         
         $pdf = PDF::loadView('vehiclemaintenance::job-card', compact('item'));
         $pdf->setPaper('A4');
-        $pdf->setOption(['isRemoteEnabled' => true]); // Enable loading remote images
+        
+        $pdf->setOptions([
+            'isPhpEnabled' => true,
+            'isHtml5ParserEnabled' => true,
+            'chroot' => storage_path('app/public')
+        ]);
         
         return $pdf->download('job-card-'.$item->code.'.pdf');
     }

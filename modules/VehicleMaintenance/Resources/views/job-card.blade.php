@@ -5,11 +5,11 @@
     <style>
         body { 
             font-family: Arial, sans-serif; 
-            background-image: url('https://health.go.ug/wp-content/uploads/2025/02/MoH-Logo.png');
+            background-image: url('{{ storage_path('app/public/MoH-Logo.png') }}');
             background-size: 50%;
             background-position: center;
             background-repeat: no-repeat;
-            background-opacity: 0.1;
+            opacity: 0.2; // Changed from background-opacity which isn't valid CSS
             position: relative;
         }
         .header { 
