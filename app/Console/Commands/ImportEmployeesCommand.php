@@ -356,18 +356,17 @@ class ImportEmployeesCommand extends Command
     {
         $licenseType = LicenseType::firstOrCreate(['name' => 'Default License']);
 
-        // Create driver with employee_id included in both create and update arrays
         Driver::updateOrCreate(
             [
-                'employee_id' => $employee->id,  // Include in the "where" clause
+                'employee_id' => $employee->id,
                 'driver_code' => $entry['ipps'] ?? null
             ],
             [
-                'employee_id' => $employee->id,  // Include in the data to be inserted/updated
+                'employee_id' => $employee->id,
                 'name' => $employee->name,
                 'phone' => $entry['mobile'] ?? null,
                 'license_type_id' => $licenseType->id,
-                'license_num' => $entry['nin'] ?? null,
+                'license_num' => null, // Set to null instead of using NIN
                 'license_issue_date' => now(),
                 'license_expiry_date' => now()->addYears(5),
                 'nid' => $entry['nin'] ?? null,
