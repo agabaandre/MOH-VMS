@@ -330,7 +330,7 @@ class VehicleMaintenanceController extends Controller
     {
         $item = VehicleMaintenance::with([
             'employee:id,name', 
-            'vehicle:id,name', 
+            'vehicle:id,name,plate_no,chassis_no,odometer_reading', 
             'maintenanceType:id,name',
             'details', 
             'details.category:id,name', 
@@ -338,6 +338,8 @@ class VehicleMaintenanceController extends Controller
         ])->findOrFail($id);
         
         $pdf = PDF::loadView('vehiclemaintenance::job-card', compact('item'));
+        $pdf->setPaper('A4');
+        $pdf->setOption(['isRemoteEnabled' => true]); // Enable loading remote images
         
         return $pdf->download('job-card-'.$item->code.'.pdf');
     }

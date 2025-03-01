@@ -3,56 +3,123 @@
 <head>
     <title>Job Card - {{ $item->code }}</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .details-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .details-table td { padding: 5px; }
-        .parts-table { width: 100%; border-collapse: collapse; }
-        .parts-table th, .parts-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        .footer { margin-top: 30px; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background-image: url('https://health.go.ug/wp-content/uploads/2025/02/MoH-Logo.png');
+            background-size: 50%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-opacity: 0.1;
+            position: relative;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 20px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+        .ministry-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .sub-header {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .form-title {
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .details-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 20px; 
+        }
+        .details-table td { 
+            padding: 5px; 
+            border: 1px solid #ddd;
+        }
+        .service-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .service-table th, .service-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .signature-section {
+            margin-top: 50px;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            width: 200px;
+            display: inline-block;
+            margin: 0 20px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h2>VEHICLE MAINTENANCE JOB CARD</h2>
-        <h3>{{ $item->code }}</h3>
+        <div class="ministry-header">MINISTRY OF HEALTH</div>
+        <div class="sub-header">TRANSPORT OFFICE</div>
+        <div class="form-title">INHOUSE GARAGE JOB FORM</div>
     </div>
 
     <table class="details-table">
         <tr>
-            <td><strong>Service Title:</strong></td>
-            <td>{{ $item->title ?? 'N/A' }}</td>
-            <td><strong>Date:</strong></td>
+            <td><strong>Advisor (receiver):</strong></td>
+            <td>{{ $item->employee->name ?? 'N/A' }}</td>
+            <td><strong>Transport Officer:</strong></td>
+            <td>_____________________</td>
+        </tr>
+        <tr>
+            <td><strong>Job Card Number:</strong></td>
+            <td>{{ $item->code }}</td>
+            <td><strong>Date Received:</strong></td>
             <td>{{ $item->date ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <td><strong>Vehicle:</strong></td>
+            <td><strong>Department:</strong></td>
+            <td>{{ $item->department ?? 'N/A' }}</td>
+            <td><strong>Odometer Mileage:</strong></td>
+            <td>{{ $item->vehicle->odometer_reading ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Make and Model:</strong></td>
             <td>{{ $item->vehicle->name ?? 'N/A' }}</td>
-            <td><strong>Priority:</strong></td>
-            <td>{{ ucfirst($item->priority) ?? 'N/A' }}</td>
+            <td><strong>Chassis #:</strong></td>
+            <td>{{ $item->vehicle->chassis_no ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <td><strong>Requisition For:</strong></td>
-            <td>{{ $item->employee->name ?? 'N/A' }}</td>
-            <td><strong>Status:</strong></td>
-            <td>{{ ucfirst($item->status) ?? 'N/A' }}</td>
+            <td><strong>Contact Name:</strong></td>
+            <td>{{ $item->contact_name ?? 'N/A' }}</td>
+            <td><strong>Number Plate:</strong></td>
+            <td>{{ $item->vehicle->plate_no ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <td><strong>Maintenance Type:</strong></td>
-            <td>{{ $item->maintenanceType->name ?? 'N/A' }}</td>
-            <td><strong>Type:</strong></td>
-            <td>{{ ucfirst($item->type) ?? 'N/A' }}</td>
+            <td><strong>Mobile #:</strong></td>
+            <td>{{ $item->phone ?? 'N/A' }}</td>
+            <td><strong>Funding:</strong></td>
+            <td>{{ $item->charge_bear_by ?? 'N/A' }}</td>
         </tr>
     </table>
 
-    <table class="parts-table">
+    <div><strong>SERVICE/REPAIR DESCRIPTION</strong></div>
+    <div style="margin: 10px 0;">{{ $item->title ?? 'N/A' }}</div>
+    <div style="margin: 10px 0;">{{ $item->remarks ?? 'N/A' }}</div>
+
+    <div><strong>PARTS TO BE USED</strong></div>
+    <table class="service-table">
         <thead>
             <tr>
                 <th>Category</th>
                 <th>Item</th>
                 <th>Quantity</th>
                 <th>Unit Price</th>
-                <th>Total Price</th>
             </tr>
         </thead>
         <tbody>
@@ -62,20 +129,24 @@
                 <td>{{ $d->parts->name ?? 'N/A' }}</td>
                 <td>{{ $d->qty ?? '0' }}</td>
                 <td>{{ $d->price ?? '0' }}</td>
-                <td>{{ $d->total ?? '0' }}</td>
             </tr>
             @endforeach
         </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="4" style="text-align: right;"><strong>Total:</strong></td>
-                <td>{{ $item->total }}</td>
-            </tr>
-        </tfoot>
     </table>
 
-    <div class="footer">
-        <p><strong>Remarks:</strong> {{ $item->remarks ?? 'N/A' }}</p>
+    <div class="signature-section">
+        <div>
+            <span>Signature of User:</span>
+            <span class="signature-line"></span>
+        </div>
+        <div style="margin: 20px 0;">
+            <span>Accepted by:</span>
+            <span class="signature-line"></span>
+        </div>
+        <div>
+            <span>Automotive/Mechanical Engineer:</span>
+            <span class="signature-line"></span>
+        </div>
     </div>
 </body>
 </html>
