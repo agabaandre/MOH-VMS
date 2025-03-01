@@ -5,18 +5,33 @@
     <style>
         body { 
             font-family: Arial, sans-serif; 
-            background-image: url('{{ storage_path('app/public/MoH-Logo.png') }}');
-            background-size: 50%;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.2; // Changed from background-opacity which isn't valid CSS
             position: relative;
         }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.1;
+            z-index: -1;
+            width: 50%;
+            height: auto;
+        }
         .header { 
-            text-align: center; 
+            display: flex;
+            align-items: center;
             margin-bottom: 20px;
             border-bottom: 2px solid #000;
             padding-bottom: 10px;
+        }
+        .logo {
+            width: 100px;
+            height: auto;
+        }
+        .header-text {
+            flex-grow: 1;
+            text-align: center;
+            padding-right: 100px; /* Balance for logo width */
         }
         .ministry-header {
             font-size: 18px;
@@ -35,7 +50,8 @@
         .details-table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin-bottom: 20px; 
+            margin-bottom: 20px;
+            font-size: 11px;
         }
         .details-table td { 
             padding: 5px; 
@@ -45,10 +61,15 @@
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            font-size: 11px;
+        }
+        .service-table th { 
+            font-size: 12px;
+            font-weight: bold;
         }
         .service-table th, .service-table td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 6px;
             text-align: left;
         }
         .signature-section {
@@ -63,10 +84,15 @@
     </style>
 </head>
 <body>
+    <img src="{{ storage_path('app/public/MoH-Logo.png') }}" class="watermark">
+    
     <div class="header">
-        <div class="ministry-header">MINISTRY OF HEALTH</div>
-        <div class="sub-header">TRANSPORT OFFICE</div>
-        <div class="form-title">INHOUSE GARAGE JOB FORM</div>
+        <img src="{{ storage_path('app/public/MoH-Logo.png') }}" class="logo">
+        <div class="header-text">
+            <div class="ministry-header">MINISTRY OF HEALTH</div>
+            <div class="sub-header">TRANSPORT OFFICE</div>
+            <div class="form-title">INHOUSE GARAGE JOB FORM</div>
+        </div>
     </div>
 
     <table class="details-table">
