@@ -40,17 +40,19 @@ class ImportEmployeesCommand extends Command
     {
         $this->info("Deleting invalid records...");
         
-        $query = Employee::query()
-            ->where(function($q) {
-                $q->whereNull('nid')
-                    ->orWhere('nid', '');
-            });
-
         // Get facility ID for Ministry of Health
         $mohFacility = Facility::where('name', 'Ministry of Health')->first();
-        if ($mohFacility) {
-            $query->orWhere('facility_id', '!=', $mohFacility->id);
+        if (!$mohFacility) {
+            throw new \Exception('Ministry of Health facility not found in database');
         }
+
+        $query = Employee::query()
+            ->where(function($q) use ($mohFacility) {
+                $q->whereNull('nid')
+                  ->orWhere('nid', '')
+                  ->orWhereNull('facility_id')
+                  ->orWhere('facility_id', '!=', $mohFacility->id);
+            });
 
         $count = $query->count();
         
@@ -62,7 +64,14 @@ class ImportEmployeesCommand extends Command
             $query->delete();
             
             $this->info("Deleted {$count} invalid records");
-            Log::info("Deleted invalid employee records", ['count' => $count]);
+            Log::info("Deleted invalid employee records", [
+                'count' => $count,
+                'reasons' => [
+                    'null_nin' => true,
+                    'non_moh_facility' => true,
+                    'null_facility' => true
+                ]
+            ]);
         } else {
             $this->info("No invalid records found");
         }
@@ -125,9 +134,17 @@ class ImportEmployeesCommand extends Command
                             continue;
                         }
 
+                        // Process facility first to check if MOH
+                        $facility = $this->processFacility($entry);
+                        if (!$facility) {
+                            $skippedCount++;
+                            $skippedReasons['non_moh']++;
+                            $this->output->progressAdvance();
+                            continue;
+                        }
+
                         $department = Department::firstOrCreate(['name' => $entry['department'] ?? 'Unassigned']);
                         $position = Position::firstOrCreate(['name' => $entry['job'] ?? 'Unspecified']);
-                        $facility = $this->processFacility($entry);
 
                         $fullName = trim(sprintf('%s %s %s',
                             $entry['surname'],
@@ -295,42 +312,30 @@ class ImportEmployeesCommand extends Command
             return null;
         }
 
+        // Only process if it's Ministry of Health
+        if (strtolower($entry['facility']) !== 'ministry of health') {
+            return null;
+        }
+
         try {
-            // First try to find by facility_id
-            $facility = Facility::where('facility_id', $entry['facility_id'])->first();
+            $facility = Facility::where('facility_id', $entry['facility_id'])
+                              ->orWhere('name', 'Ministry of Health')
+                              ->first();
             
             if (!$facility) {
-                // If not found by facility_id, try to find by name
-                $facility = Facility::where('name', $entry['facility'])->first();
-                
-                if (!$facility) {
-                    // If facility doesn't exist at all, create it
-                    return Facility::create([
-                        'facility_id' => $entry['facility_id'],
-                        'name' => $entry['facility'],
-                        'district' => $entry['district'],
-                        'region' => $entry['region'] ?? null,
-                        'is_active' => true,
-                    ]);
-                }
-                
-                $this->logFacilityError('Facility exists with different facility_id', [
-                    'existing_facility' => $facility->toArray(),
-                    'import_data' => [
-                        'facility_id' => $entry['facility_id'],
-                        'name' => $entry['facility'],
-                        'district' => $entry['district'],
-                        'region' => $entry['region'] ?? null,
-                    ]
+                return Facility::create([
+                    'facility_id' => $entry['facility_id'],
+                    'name' => $entry['facility'],
+                    'district' => $entry['district'] ?? null,
+                    'region' => $entry['region'] ?? null,
+                    'is_active' => true,
                 ]);
-                
-                return $facility;
             }
             
             // Update existing facility
             $facility->update([
-                'name' => $entry['facility'],
-                'district' => $entry['district'],
+                'name' => 'Ministry of Health',
+                'district' => $entry['district'] ?? null,
                 'region' => $entry['region'] ?? null,
                 'is_active' => true,
             ]);
