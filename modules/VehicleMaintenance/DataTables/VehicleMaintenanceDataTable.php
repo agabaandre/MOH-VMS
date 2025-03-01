@@ -32,6 +32,7 @@ class VehicleMaintenanceDataTable extends DataTable
                 $button = '<div class="align-items-center">';
                 $button .= '<a href="javascript:void(0);" class="btn btn-info-soft btn-sm m-1" title="View" onclick="'."axiosModal('".route(\config('theme.rprefix').'.show', $query->id).'\')"><i class="fa fa-eye"></i></a>';
                 $button .= '<a href="'.route(\config('theme.rprefix').'.edit', $query->id).'" class="btn btn-success-soft btn-sm m-1" title="Edit" ><i class="fa fa-edit"></i></a>';
+                $button .= '<a href="'.route('admin.vehicle.maintenance.export', $query->id).'" class="btn btn-primary-soft btn-sm m-1" title="Job Card"><i class="fa fa-file-pdf"></i></a>';
                 $button .= '<a href="javascript:void(0);" class="btn btn-danger-soft btn-sm mx-1" onclick="delete_modal(\''.route(\config('theme.rprefix').'.destroy', $query->id).'\')"  title="Delete"><i class="fa fa-trash"></i></a>';
                 $button .= '</div>';
 

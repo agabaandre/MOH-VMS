@@ -145,5 +145,9 @@
         </div>
     </div>
     <div class="modal-footer">
+        <a href="{{ route('admin.vehicle.maintenance.export', $item->id) }}" class="btn btn-primary me-2">
+            @localize('Export Job Card')
+        </a>
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@localize('Close')</button>
     </div>
+</div>

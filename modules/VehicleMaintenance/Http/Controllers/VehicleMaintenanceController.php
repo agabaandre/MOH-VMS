@@ -12,6 +12,7 @@ use Modules\VehicleMaintenance\DataTables\VehicleMaintenanceDataTable;
 use Modules\VehicleMaintenance\Entities\VehicleMaintenance;
 use Modules\VehicleMaintenance\Entities\VehicleMaintenanceType;
 use Modules\VehicleManagement\Entities\Vehicle;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class VehicleMaintenanceController extends Controller
 {
@@ -320,5 +321,17 @@ class VehicleMaintenanceController extends Controller
         $maintenance->update(['status' => $request->status]);
 
         return \response()->success($maintenance, localize('item Status Updated Successfully'), 200);
+    }
+
+    /**
+     * Export job card as PDF
+     */
+    public function export($id)
+    {
+        $item = VehicleMaintenance::with('employee:id,name', 'vehicle:id,name', 'details', 'details.category:id,name', 'details.parts:id,name')->findOrFail($id);
+        
+        $pdf = PDF::loadView('vehiclemaintenance::job-card', compact('item'));
+        
+        return $pdf->download('job-card-'.$item->code.'.pdf');
     }
 }
