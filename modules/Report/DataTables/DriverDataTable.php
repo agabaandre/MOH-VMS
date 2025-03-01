@@ -21,13 +21,15 @@ class DriverDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->editColumn('is_active', function ($query) {
-                return $query->is_active == 1 ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
+                $status = $query->is_active == 1 ? 'Active' : 'Inactive';
+                return $status; // Remove HTML for clean Excel export
             })
             ->editColumn('leave_status', function ($query) {
-                return $query->leave_status == 1 ? '<span class="badge bg-warning">On Leave</span>' : '<span class="badge bg-info">Working</span>';
+                $status = $query->leave_status == 1 ? 'On Leave' : 'Working';
+                return $status; // Remove HTML for clean Excel export
             })
             ->editColumn('avatar_path', function ($query) {
-                return $query->avatar_url ? '<img src="'.$query->avatar_url.'" height="50px">' : 'No Image';
+                return $query->avatar_url ? 'Has Image' : 'No Image'; // Simplified for Excel
             })
             ->editColumn('created_at', function ($query) {
                 return $query->created_at->format('Y-m-d H:i:s');
@@ -35,7 +37,6 @@ class DriverDataTable extends DataTable
             ->editColumn('updated_at', function ($query) {
                 return $query->updated_at->format('Y-m-d H:i:s');
             })
-            ->rawColumns(['is_active', 'leave_status', 'avatar_path'])
             ->setRowId('id')
             ->addIndexColumn();
     }
@@ -101,6 +102,7 @@ class DriverDataTable extends DataTable
                 'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
             ])
             ->buttons([
+                Button::make('excel')->className('btn btn-success box-shadow--4dp btn-sm-menu'),
                 Button::make('reset')->className('btn btn-success box-shadow--4dp btn-sm-menu'),
                 Button::make('reload')->className('btn btn-success box-shadow--4dp btn-sm-menu'),
             ]);

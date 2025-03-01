@@ -164,6 +164,7 @@ class VehicleDataTable extends DataTable
                 'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
             ])
             ->buttons([
+                Button::make('excel')->className('btn btn-success box-shadow--4dp btn-sm-menu'),
                 Button::make('reset')->className('btn btn-success box-shadow--4dp btn-sm-menu'),
                 Button::make('reload')->className('btn btn-success box-shadow--4dp btn-sm-menu'),
             ]);

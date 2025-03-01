@@ -20,24 +20,26 @@ class EmployeeDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-
             ->editColumn('department', function ($query) {
-                return $query->department?->name;
-            })->filterColumn('department', function ($query, $keyword) {
+                return $query->department?->name ?? 'N/A';
+            })
+            ->filterColumn('department', function ($query, $keyword) {
                 $query->whereHas('department', function ($query) use ($keyword) {
                     $query->where('name', 'like', '%'.$keyword.'%');
                 });
-            })->orderColumn('department', function ($query, $order) {
+            })
+            ->orderColumn('department', function ($query, $order) {
                 $query->orderBy('department_id', $order);
             })
-
             ->editColumn('position', function ($query) {
-                return $query->position?->name;
-            })->filterColumn('position', function ($query, $keyword) {
+                return $query->position?->name ?? 'N/A';
+            })
+            ->filterColumn('position', function ($query, $keyword) {
                 $query->whereHas('position', function ($query) use ($keyword) {
                     $query->where('name', 'like', '%'.$keyword.'%');
                 });
-            })->orderColumn('position', function ($query, $order) {
+            })
+            ->orderColumn('position', function ($query, $order) {
                 $query->orderBy('position_id', $order);
             })
             ->setRowId('id')
@@ -101,6 +103,7 @@ class EmployeeDataTable extends DataTable
                 'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
             ])
             ->buttons([
+                Button::make('excel')->className('btn btn-success box-shadow--4dp btn-sm-menu'),
                 Button::make('reset')->className('btn btn-success box-shadow--4dp btn-sm-menu'),
                 Button::make('reload')->className('btn btn-success box-shadow--4dp btn-sm-menu'),
             ]);

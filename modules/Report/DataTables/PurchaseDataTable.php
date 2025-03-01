@@ -20,7 +20,6 @@ class PurchaseDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-
             ->addColumn('vendor_name', function ($query) {
                 return $query->vendor?->name ?? 'N/A';
             })
@@ -33,10 +32,16 @@ class PurchaseDataTable extends DataTable
                 $query->orderBy('vendor_id', $order);
             })
             ->addColumn('total', function ($query) {
-                return $query->total;
+                return number_format($query->total, 2); // Format number for Excel
             })
             ->editColumn('status', function ($query) {
-                return ucfirst($query->status);
+                return ucfirst($query->status); // Clean status text for Excel
+            })
+            ->editColumn('date', function ($query) {
+                return $query->date?->format('Y-m-d') ?? 'N/A'; // Consistent date format
+            })
+            ->editColumn('updated_at', function ($query) {
+                return $query->updated_at?->format('Y-m-d H:i:s') ?? 'N/A';
             })
             ->setRowId('id')
             ->addIndexColumn()
@@ -98,6 +103,7 @@ class PurchaseDataTable extends DataTable
                 'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
             ])
             ->buttons([
+                Button::make('excel')->className('btn btn-success box-shadow--4dp btn-sm-menu'),
                 Button::make('reset')->className('btn btn-success box-shadow--4dp btn-sm-menu'),
                 Button::make('reload')->className('btn btn-success box-shadow--4dp btn-sm-menu'),
             ]);

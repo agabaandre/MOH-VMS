@@ -65,15 +65,6 @@
                     </div>
                 </div>
 
-
-                <div class="form-group row my-2">
-                    <label for="pick_up" class="col-sm-5 col-form-label">@localize('Pick Up') </label>
-                    <div class="col-sm-7">
-                        <input name="pickup" class="form-control" type="text" placeholder="@localize('Pick Up')"
-                            id="pick_up" value="{{ isset($item) ? $item->pickup : old('pickup') }}">
-                    </div>
-                </div>
-
                 <div class="form-group row my-2">
                     <label for="requisition_date" class="col-sm-5 col-form-label">@localize('Requisition Date') </label>
                     <div class="col-sm-7">
