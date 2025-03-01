@@ -19,19 +19,25 @@
         }
         .header { 
             display: flex;
-            align-items: center;
+            align-items: flex-start; /* Changed from center to flex-start */
             margin-bottom: 20px;
             border-bottom: 2px solid #000;
             padding-bottom: 10px;
+            position: relative; /* Added */
         }
         .logo {
-            width: 100px;
+            width: 80px; /* Reduced from 100px */
             height: auto;
+            margin-top: 5px; /* Added to align with text */
         }
         .header-text {
             flex-grow: 1;
             text-align: center;
-            padding-right: 100px; /* Balance for logo width */
+            padding-left: 80px; /* Changed from padding-right */
+            margin-right: 80px; /* Added to balance the layout */
+            position: absolute; /* Added */
+            left: 0; /* Added */
+            right: 0; /* Added */
         }
         .ministry-header {
             font-size: 18px;
