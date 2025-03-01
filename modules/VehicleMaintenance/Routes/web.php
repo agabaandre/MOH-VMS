@@ -23,7 +23,7 @@ Route::prefix('admin/vehicle/maintenance')->as('admin.vehicle.maintenance.')->gr
     Route::get('/get-employee', [VehicleMaintenanceController::class, 'getEmployee'])->name('get-employee');
     Route::get('/get-vehicle', [VehicleMaintenanceController::class, 'getVehicle'])->name('get-vehicle');
     Route::get('/get-maintenance-type', [VehicleMaintenanceController::class, 'getMaintenanceType'])->name('get-maintenance-type');
-    Route::get('maintenance/export/{id}', [VehicleMaintenanceController::class, 'export'])->name('admin.vehicle.maintenance.export');
+    Route::get('/export/{id}', [VehicleMaintenanceController::class, 'export'])->name('export');
     Route::resource('/', 'VehicleMaintenanceController')->parameters(['' => 'maintenance']);
     Route::post('{maintenance}/status-update', [VehicleMaintenanceController::class, 'statusUpdate'])->name('status-update');
 });
