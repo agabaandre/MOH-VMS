@@ -103,6 +103,7 @@ class VehicleMaintenanceController extends Controller
             'collection.*.parts_id' => 'required|exists:inventory_parts,id',
             'collection.*.qty' => 'required|numeric',
             'collection.*.price' => 'required|numeric',
+            'mileage' => 'required|numeric|min:0',
         ]);
         try {
             DB::beginTransaction();
@@ -176,6 +177,7 @@ class VehicleMaintenanceController extends Controller
             'collection.*.parts_id' => 'required|exists:inventory_parts,id',
             'collection.*.qty' => 'required|numeric',
             'collection.*.price' => 'required|numeric',
+            'mileage' => 'required|numeric|min:0',
         ]);
 
         if ($request->hasFile('req_img_path')) {

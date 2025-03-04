@@ -12,6 +12,85 @@ $(function () {
     select2AjaxInit("#vendor_id");
 });
 
+$(document).ready(function () {
+    // Function to add new row
+    function addNewRow() {
+        let row = `
+            <tr>
+                <td>
+                    <select class="form-control category-select" name="collection[][category_id]" required>
+                        <option value="">@localize('Select Category')</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control parts-select" name="collection[][parts_id]" required>
+                        <option value="">@localize('Select Parts')</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="form-control unit-display" readonly>
+                    <input type="hidden" class="unit-id" name="collection[][unit_id]">
+                </td>
+                <td>
+                    <input type="number" class="form-control qty" name="collection[][qty]" required min="1">
+                </td>
+                <td>
+                    <input type="number" class="form-control price" name="collection[][price]" required min="0" step="0.01">
+                </td>
+                <td>
+                    <input type="number" class="form-control total" readonly>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm remove-row"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        `;
+        $("#purchase-table tbody").append(row);
+    }
+
+    // Handle parts selection
+    $(document).on("change", ".parts-select", function () {
+        let $row = $(this).closest("tr");
+        let selectedOption = $(this).select2("data")[0];
+
+        if (selectedOption && selectedOption.unit) {
+            $row.find(".unit-display").val(
+                selectedOption.unit.name +
+                    " (" +
+                    selectedOption.unit.abbreviation +
+                    ")"
+            );
+            $row.find(".unit-id").val(selectedOption.unit.id);
+        } else {
+            $row.find(".unit-display").val("");
+            $row.find(".unit-id").val("");
+        }
+    });
+
+    // Initialize select2 for parts with unit data
+    function initializePartsSelect($select) {
+        let categoryId = $select.closest("tr").find(".category-select").val();
+        let partsUrl = $("#purchase-table").data("parts-url");
+
+        $select.select2({
+            ajax: {
+                url: partsUrl,
+                data: function (params) {
+                    return {
+                        search: params.term,
+                        category_id: categoryId,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data,
+                    };
+                },
+            },
+        });
+    }
+});
+
 function addNewRow(element, item = null) {
     let el = $(element);
     let inventoryUrl = el.data("inventory-category-url");
@@ -22,8 +101,8 @@ function addNewRow(element, item = null) {
     let row = `<tr id="row-${i}">`;
     row += `<td>
                 <select name="collection[${i}][category_id]" id="category-id-${i}" class="form-control" data-ajax-url="${inventoryUrl}" onchange="changeCategory(${i})" data-placeholder="${localize(
-                    "Choose Inventory Category",
-                )}" required >`;
+        "Choose Inventory Category"
+    )}" required >`;
 
     if (item && item.category) {
         row += `<option value="${item.category.id}" selected >${item.category.name}</option>`;
@@ -31,8 +110,8 @@ function addNewRow(element, item = null) {
     row += `</select><label class="error" for="category-id-${i}"></label></td>`;
     row += `<td>
                 <select name="collection[${i}][parts_id]" id="parts-id-${i}" class="form-control" data-ajax-url="${partsUrl}" data-placeholder="${localize(
-                    "Choose Parts",
-                )}"  required>`;
+        "Choose Parts"
+    )}"  required>`;
 
     if (item && item.parts) {
         row += `<option value="${item.parts.id}" selected >${item.parts.name}</option>`;

@@ -107,6 +107,15 @@
                     </div>
                 </div>
                 <div class="form-group row my-2">
+                    <label for="card_number" class="col-sm-5 col-form-label">@localize('Card Number') <i
+                            class="text-danger">*</i></label>
+                    <div class="col-sm-7">
+                        <input name="card_number" required="" class="form-control" type="text"
+                            placeholder="@localize('Card Number')" id="card_number"
+                            value="{{ isset($item) ? $item->card_number : old('card_number') }}">
+                    </div>
+                </div>
+                <div class="form-group row my-2">
                     <label for="designation" class="col-sm-5 col-form-label">@localize('Designation') <i
                             class="text-danger">*</i></label>
                     <div class="col-sm-7">

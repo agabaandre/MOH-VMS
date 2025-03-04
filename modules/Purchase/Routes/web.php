@@ -22,4 +22,5 @@ Route::prefix('admin/purchase')->as('admin.purchase.')->group(function () {
     Route::get('/get-vendor', [PurchaseController::class, 'getVendor'])->name('get-vendor');
     Route::resource('/', 'PurchaseController')->parameters(['' => 'purchase']);
     Route::post('{purchase}/status-update', [PurchaseController::class, 'statusUpdate'])->name('status-update');
+    Route::get('print/{id}', [PurchaseController::class, 'print'])->name('print');
 });

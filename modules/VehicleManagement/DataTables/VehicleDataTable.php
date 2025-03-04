@@ -110,6 +110,7 @@ class VehicleDataTable extends DataTable
                 'vehicles.driver_id',
                 'vehicles.vendor_id',
                 'vehicles.seat_capacity',
+                'vehicles.purchase_value',
                 'vehicles.is_active',
             ])
             ->with([
@@ -187,6 +188,9 @@ class VehicleDataTable extends DataTable
             Column::make('vehicle_division_id')->title(localize('Vehicle Division'))->defaultContent('N/A'),
             Column::make('driver_id')->title(localize('Driver'))->defaultContent('N/A'),
             Column::make('seat_capacity')->title(localize('Seat Capacity'))->defaultContent('N/A'),
+            Column::make('purchase_value')
+                ->title(localize('Purchase Value (UGX)'))
+                ->defaultContent('N/A'),
             Column::computed('action')
                 ->title(localize('Action'))
                 ->searchable(false)

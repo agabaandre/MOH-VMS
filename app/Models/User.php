@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\ActionBtn;
 use App\Traits\FormatTimestamps;
+use App\Traits\NotifiableModel;
 use App\Traits\WithCache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -24,6 +25,7 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
     use WithCache;
+    use NotifiableModel;
 
     protected static $cacheKey = '_users_';
 

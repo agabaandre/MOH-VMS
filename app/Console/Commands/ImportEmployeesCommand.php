@@ -50,6 +50,8 @@ class ImportEmployeesCommand extends Command
             ->where(function($q) use ($mohFacility) {
                 $q->whereNull('nid')
                   ->orWhere('nid', '')
+                  ->orWhereNull('card_number')  // Add this line
+                  ->orWhere('card_number', '')  // Add this line
                   ->orWhereNull('facility_id')
                   ->orWhere('facility_id', '!=', $mohFacility->id);
             });
@@ -104,7 +106,9 @@ class ImportEmployeesCommand extends Command
             $skippedReasons = [
                 'missing_name' => 0,
                 'missing_nin' => 0,
-                'non_moh' => 0
+                'missing_card' => 0, // Add this line
+                'non_moh' => 0,
+                'delete_prefix' => 0  // Add new reason
             ];
 
             $this->info("Starting import of {$totalEntries} employees in " . count($batches) . " batches...");
@@ -125,11 +129,34 @@ class ImportEmployeesCommand extends Command
                             continue;
                         }
 
+                        // Skip if name starts with DELETE
+                        $fullName = trim(sprintf('%s %s %s',
+                            $entry['surname'],
+                            $entry['firstname'],
+                            $entry['othername'] ?? ''
+                        ));
+                        
+                        if (Str::startsWith($fullName, 'DELETE')) {
+                            Log::warning('Skipped entry: Name prefixed with DELETE', ['name' => $fullName]);
+                            $skippedCount++;
+                            $skippedReasons['delete_prefix']++;
+                            $this->output->progressAdvance();
+                            continue;
+                        }
+
                         // Skip if missing NIN
                         if (empty($entry['nin'])) {
                             Log::warning('Skipped entry: Missing National ID', $entry);
                             $skippedCount++;
                             $skippedReasons['missing_nin']++;
+                            $this->output->progressAdvance();
+                            continue;
+                        }
+
+                        if (empty($entry['card_number'])) {
+                            Log::warning('Skipped entry: Missing Card Number', $entry);
+                            $skippedCount++;
+                            $skippedReasons['missing_card']++;
                             $this->output->progressAdvance();
                             continue;
                         }
@@ -165,6 +192,7 @@ class ImportEmployeesCommand extends Command
                                 'email' => $email,
                                 'dob' => $dob,
                                 'nid' => $entry['nin'] ?? null,
+                                'card_number' => $entry['card_number'],
                                 'facility_id' => $facility ? $facility->id : null,
                                 'created_at' => now(),
                                 'updated_at' => now(),
@@ -205,7 +233,9 @@ class ImportEmployeesCommand extends Command
                     ['Failed', $errorCount],
                     ['Skipped (Missing Name)', $skippedReasons['missing_name']],
                     ['Skipped (Missing NIN)', $skippedReasons['missing_nin']],
+                    ['Skipped (Missing Card)', $skippedReasons['missing_card']],
                     ['Skipped (Non-MOH)', $skippedReasons['non_moh']],
+                    ['Skipped (DELETE Prefix)', $skippedReasons['delete_prefix']],
                     ['Total Processed', $successCount + $errorCount + $skippedCount],
                 ]
             );

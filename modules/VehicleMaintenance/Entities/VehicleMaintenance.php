@@ -4,6 +4,7 @@ namespace Modules\VehicleMaintenance\Entities;
 
 use App\Traits\FormatTimestamps;
 use App\Traits\GenerateCode;
+use App\Traits\NotifiableModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Employee\Entities\Employee;
@@ -15,6 +16,7 @@ class VehicleMaintenance extends Model
     use FormatTimestamps;
     use GenerateCode;
     use HasFactory;
+    use NotifiableModel;
 
     // fillable attributes
     protected $fillable = [
@@ -24,6 +26,7 @@ class VehicleMaintenance extends Model
         'maintenance_type_id',
         'title',
         'date',
+        'mileage',
         'remarks',
         'charge_bear_by',
         'charge',
@@ -35,9 +38,9 @@ class VehicleMaintenance extends Model
 
     // casted attributes
     protected $casts = [
-
         'charge' => 'decimal:2',
         'total' => 'decimal:2',
+        'mileage' => 'decimal:2',
     ];
 
     /**
@@ -51,6 +54,22 @@ class VehicleMaintenance extends Model
         static::creating(function ($model) {
             $model->code = $model->generateCode();
         });
+    }
+
+    /**
+     * Update the status and send notification
+     *
+     * @param string $status
+     * @return void
+     */
+    public function updateStatus($status)
+    {
+        $this->status = $status;
+        $this->save();
+
+        if (in_array($status, ['approved', 'rejected'])) {
+            $this->sendApprovalNotification();
+        }
     }
 
     /**

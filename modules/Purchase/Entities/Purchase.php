@@ -4,6 +4,7 @@ namespace Modules\Purchase\Entities;
 
 use App\Traits\FormatTimestamps;
 use App\Traits\GenerateCode;
+use App\Traits\NotifiableModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Inventory\Entities\Vendor;
@@ -13,6 +14,7 @@ class Purchase extends Model
     use FormatTimestamps;
     use GenerateCode;
     use HasFactory;
+    use NotifiableModel;
 
     protected $fillable = [
         'code',
@@ -43,9 +45,25 @@ class Purchase extends Model
     {
         parent::boot();
 
-        static::creating(function ($vendor) {
-            $vendor->code = $vendor->generateCode();
+        static::creating(function ($purchase) {
+            $purchase->code = $purchase->generateCode();
         });
+    }
+
+    /**
+     * Update the status and send notification
+     *
+     * @param string $status
+     * @return void
+     */
+    public function updateStatus($status)
+    {
+        $this->status = $status;
+        $this->save();
+
+        if (in_array($status, ['approved', 'rejected'])) {
+            $this->sendApprovalNotification();
+        }
     }
 
     /**

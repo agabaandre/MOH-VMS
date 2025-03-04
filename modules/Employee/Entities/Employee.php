@@ -17,6 +17,7 @@ class Employee extends Model
         'department_id',
         'position_id',
         'nid',
+        'card_number', // Add this line
         'phone',
         'email',
         'blood_group',

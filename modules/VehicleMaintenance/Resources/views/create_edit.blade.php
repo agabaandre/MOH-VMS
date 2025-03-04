@@ -93,6 +93,15 @@
                             value="{{ isset($item) ? $item->date : old('date', date('Y-m-d')) }}" required>
                     </div>
 
+                    <div class="col-md-2">
+                        <label for="mileage" class="fw-bold">
+                            {{ localize('Mileage') }}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="number" class="form-control" id="mileage" name="mileage"
+                            placeholder="@localize('Mileage')" min="0" step="0.01"
+                            value="{{ isset($item) ? $item->mileage : old('mileage', '0.00') }}" required>
+                    </div>
 
                     <div class="col-md-3">
                         <label for="title" class="fw-bold">

@@ -48,19 +48,22 @@
                             data-parts-url="{{ route(config('theme.rprefix') . '.get-parts') }}">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th width="30%">
+                                    <th width="25%">
                                         @localize('Category')
                                         <span class="text-danger">*</span>
                                     </th>
-                                    <th width="30%">
+                                    <th width="25%">
                                         @localize('Item')
                                         <span class="text-danger">*</span>
                                     </th>
-                                    <th width="30%">
+                                    <th width="20%">
+                                        @localize('Unit')
+                                    </th>
+                                    <th width="20%">
                                         @localize('Quantity')
                                         <span class="text-danger">*</span>
                                     </th>
-                                    <th>
+                                    <th width="10%">
                                     </th>
                                 </tr>
                             </thead>

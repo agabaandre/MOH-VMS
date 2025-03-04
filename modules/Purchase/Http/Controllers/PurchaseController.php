@@ -10,6 +10,7 @@ use Modules\Inventory\Entities\InventoryParts;
 use Modules\Inventory\Entities\Vendor;
 use Modules\Purchase\DataTables\PurchaseDataTable;
 use Modules\Purchase\Entities\Purchase;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PurchaseController extends Controller
 {
@@ -77,6 +78,7 @@ class PurchaseController extends Controller
             'order_path' => 'nullable|image',
             'collection.*.category_id' => 'required|exists:inventory_categories,id',
             'collection.*.parts_id' => 'required|exists:inventory_parts,id',
+            'collection.*.unit_id' => 'required|exists:inventory_units,id',
             'collection.*.qty' => 'required|numeric',
             'collection.*.price' => 'required|numeric',
         ]);
@@ -96,6 +98,7 @@ class PurchaseController extends Controller
                     'purchase_id' => $purchase->id,
                     'category_id' => $d['category_id'],
                     'parts_id' => $d['parts_id'],
+                    'unit_id' => $d['unit_id'],
                     'qty' => $d['qty'],
                     'price' => $d['price'],
                     'total' => $d['qty'] * $d['price'],
@@ -169,6 +172,7 @@ class PurchaseController extends Controller
                     'purchase_id' => $purchase->id,
                     'category_id' => $d['category_id'],
                     'parts_id' => $d['parts_id'],
+                    'unit_id' => $d['unit_id'],
                     'qty' => $d['qty'],
                     'price' => $d['price'],
                     'total' => $d['qty'] * $d['price'],
@@ -228,14 +232,29 @@ class PurchaseController extends Controller
      */
     public function getParts(Request $request)
     {
-        // get all active Inventory Category id and name as text value pair paginated
-        $items = InventoryParts::where('is_active', true)
-            ->when($request->search, function ($query, $search) {
+        $search = $request->search;
+        $category_id = $request->category_id;
+
+        $items = InventoryParts::with('unit:id,name,abbreviation')
+            ->where('is_active', true)
+            ->when($search, function ($query) use ($search) {
                 return $query->where('name', 'like', '%'.$search.'%');
-            })->when($request->category_id, function ($query, $category_id) {
+            })
+            ->when($category_id, function ($query) use ($category_id) {
                 return $query->where('category_id', $category_id);
             })
-            ->select(['id', 'name as text'])->paginate(10);
+            ->select(['id', 'name as text', 'unit_id'])
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'text' => $item->name,
+                    'unit' => [
+                        'name' => $item->unit ? $item->unit->name : 'N/A',
+                        'abbreviation' => $item->unit ? $item->unit->abbreviation : ''
+                    ]
+                ];
+            });
 
         return response()->json($items);
     }
@@ -267,5 +286,19 @@ class PurchaseController extends Controller
         $purchase->update(['status' => $request->status]);
 
         return \response()->success($purchase, localize('item Status Updated Successfully'), 200);
+    }
+
+    /**
+     * Print the purchase order
+     */
+    public function print($id)
+    {
+        $item = Purchase::with('vendor:id,name', 'details', 'details.category:id,name', 'details.parts:id,name')->findOrFail($id);
+        
+        $pdf = PDF::loadView('purchase::print', compact('item'));
+        return $pdf->download('purchase-order-'.$item->code.'.pdf');
+        
+        // Alternatively, if you want to stream/preview in browser:
+        // return $pdf->stream('purchase-order-'.$item->code.'.pdf');
     }
 }

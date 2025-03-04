@@ -115,7 +115,7 @@
                 </div>
 
                 <div class="form-group row my-2">
-                    <label for="driver_id" class="col-sm-5 col-form-label">@localize('Driven By') <i
+                    <label for="driver_id" class="col-sm-5 col-form-label">@localize('Driver') <i
                             class="text-danger">*</i></label>
                     <div class="col-sm-7">
                         <select class="form-control basic-single" name="driver_id" id="driver_id" tabindex="-1"

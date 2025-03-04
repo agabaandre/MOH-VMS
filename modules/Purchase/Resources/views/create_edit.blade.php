@@ -62,6 +62,10 @@
                                         @localize('Item')
                                         <span class="text-danger">*</span>
                                     </th>
+                                    <th width="10%">
+                                        @localize('Unit')
+                                        <span class="text-danger">*</span>
+                                    </th>
                                     <th width="15%">
                                         @localize('Quantity')
                                         <span class="text-danger">*</span>

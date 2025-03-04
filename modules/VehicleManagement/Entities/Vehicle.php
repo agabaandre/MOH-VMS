@@ -26,9 +26,14 @@ class Vehicle extends Model
         'driver_id',
         'vendor_id',
         'seat_capacity',
+        'purchase_value',
         'is_active',
         'off_board_date',
         'off_board_remarks',
+        'off_board_lot_number',
+        'off_board_buyer',
+        'off_board_amount',
+        'off_board_reason'
     ];
 
     protected $casts = [
@@ -39,6 +44,21 @@ class Vehicle extends Model
     protected static function newFactory()
     {
         return \Modules\VehicleManagement\Database\factories\VehicleFactory::new();
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($vehicle) {
+            $vehicle->name = $vehicle->generateName();
+        });
+    }
+
+    protected function generateName()
+    {
+        $type = $this->vehicle_type ? $this->vehicle_type->name : 'Unknown Type';
+        return "{$this->license_plate} - {$type}";
     }
 
     public function department()

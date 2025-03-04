@@ -27,15 +27,6 @@
             <div class="col-md-12 col-lg-6">
 
                 <div class="form-group row my-2">
-                    <label for="name" class="col-sm-5 col-form-label">@localize('Vehicle Name') <i
-                            class="text-danger">*</i></label> </label>
-                    <div class="col-sm-7">
-                        <input name="name" class="form-control" type="text" placeholder="@localize('Vehicle Name')"
-                            id="name" value="{{ isset($item) ? $item->name : old('name') }}" required>
-                    </div>
-                </div>
-
-                <div class="form-group row my-2">
                     <label for="department_id" class="col-sm-5 col-form-label">@localize('Department') <i
                             class="text-danger">*</i></label>
                     <div class="col-sm-7">
@@ -177,6 +168,15 @@
                 </div>
 
                 <div class="form-group row my-2">
+                    <label for="purchase_value" class="col-sm-5 col-form-label">@localize('Purchase Value (UGX)')</label>
+                    <div class="col-sm-7">
+                        <input name="purchase_value" class="form-control" type="number" step="0.01"
+                            placeholder="@localize('Purchase Value')" id="purchase_value"
+                            value="{{ isset($item) ? $item->purchase_value : old('purchase_value') }}">
+                    </div>
+                </div>
+
+                <div class="form-group row my-2">
                     <label for="is_active" class="col-sm-5 col-form-label">@localize('Status')</label>
                     <div class="col-sm-7">
                         <select class="form-control" name="is_active" id="is_active">
@@ -196,9 +196,40 @@
                     </div>
 
                     <div class="form-group row my-2">
-                        <label for="off_board_remarks" class="col-sm-5 col-form-label">@localize('Off-Board Remarks')</label>
+                        <label for="off_board_lot_number" class="col-sm-5 col-form-label">@localize('Lot Number')</label>
                         <div class="col-sm-7">
-                            <textarea class="form-control" name="off_board_remarks" id="off_board_remarks" rows="3">{{ isset($item) ? $item->off_board_remarks : '' }}</textarea>
+                            <input type="text" class="form-control" name="off_board_lot_number" id="off_board_lot_number"
+                                value="{{ isset($item) ? $item->off_board_lot_number : '' }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row my-2">
+                        <label for="off_board_buyer" class="col-sm-5 col-form-label">@localize('Buyer')</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" name="off_board_buyer" id="off_board_buyer"
+                                value="{{ isset($item) ? $item->off_board_buyer : '' }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row my-2">
+                        <label for="off_board_amount" class="col-sm-5 col-form-label">@localize('Amount (UGX)')</label>
+                        <div class="col-sm-7">
+                            <input type="number" step="0.01" class="form-control" name="off_board_amount" id="off_board_amount"
+                                value="{{ isset($item) ? $item->off_board_amount : '' }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row my-2">
+                        <label for="off_board_reason" class="col-sm-5 col-form-label">@localize('Reason')</label>
+                        <div class="col-sm-7">
+                            <textarea class="form-control" name="off_board_reason" id="off_board_reason" rows="2">{{ isset($item) ? $item->off_board_reason : '' }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row my-2">
+                        <label for="off_board_remarks" class="col-sm-5 col-form-label">@localize('Additional Remarks')</label>
+                        <div class="col-sm-7">
+                            <textarea class="form-control" name="off_board_remarks" id="off_board_remarks" rows="2">{{ isset($item) ? $item->off_board_remarks : '' }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -210,21 +241,3 @@
         <button class="btn btn-success" type="submit">@localize('Save')</button>
     </div>
 </form>
-
-@push('scripts')
-<script>
-    $(document).ready(function() {
-        $('#is_active').on('change', function() {
-            if ($(this).val() == '0') {
-                $('.offboard-fields').show();
-                $('#off_board_date').prop('required', true);
-                $('#off_board_remarks').prop('required', true);
-            } else {
-                $('.offboard-fields').hide();
-                $('#off_board_date').prop('required', false);
-                $('#off_board_remarks').prop('required', false);
-            }
-        });
-    });
-</script>
-@endpush

@@ -79,7 +79,11 @@ class InventoryPartsDataTable extends DataTable
             Column::make('DT_RowIndex')->title(localize('SL'))->searchable(false)->orderable(false)->width(30)->addClass('text-center'),
             Column::make('name')->title(localize('Name'))->defaultContent('N/A'),
             Column::make('qty')->title(localize('Quantity'))->defaultContent('0'),
-            Column::make('unit.abbreviation')->title(localize('Unit'))->defaultContent('N/A'),
+            Column::computed('unit_info')
+                ->title(localize('Unit'))
+                ->searchable(false)
+                ->orderable(false)
+                ->defaultContent('N/A'),
             Column::make('is_active')->title(localize('Status')),
             Column::make('created_at')->title(localize('Created'))->defaultContent('N/A'),
             Column::make('updated_at')->title(localize('Updated'))->defaultContent('N/A'),

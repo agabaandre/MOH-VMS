@@ -65,7 +65,7 @@
                 </th>
                 <td>
                     <input type="number" class="form-control" name="qty" id="qty"
-                        value="{{ isset($item) ? $item->qty : old('qty', 0) }}" min="0"
+                        value="0" readonly disabled
                         placeholder="@localize('qty')">
                 </td>
             </tr>

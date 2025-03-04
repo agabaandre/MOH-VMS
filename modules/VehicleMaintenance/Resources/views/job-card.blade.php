@@ -129,14 +129,14 @@
         <tr>
             <td><strong>Vehicle Registration:</strong></td>
             <td>{{ $item->vehicle->license_plate ?? 'N/A' }}</td>
-            <td><strong>Status:</strong></td>
-            <td>{{ ucfirst($item->status) ?? 'N/A' }}</td>
+            <td><strong>Department:</strong></td>
+            <td>{{ $item->vehicle->department->name ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <td><strong>Charge Bear By:</strong></td>
-            <td>{{ $item->charge_bear_by ?? 'N/A' }}</td>
+            <td><strong>Mileage (km):</strong></td>
+            <td>{{ number_format($item->mileage, 2) ?? 'N/A' }}</td>
             <td><strong>Total Charge:</strong></td>
-            <td>{{ $item->charge ?? 'N/A' }}</td>
+            <td>{{ number_format($item->total, 2) ?? 'N/A' }}</td>
         </tr>
     </table>
 

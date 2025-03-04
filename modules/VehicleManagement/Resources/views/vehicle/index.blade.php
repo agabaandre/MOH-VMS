@@ -109,4 +109,8 @@
         </div>
     </x-card>
 
+    @push('js')
+        <script src="{{ module_asset('VehicleManagement/js/create_edit.min.js') }}"></script>
+    @endpush
+
 </x-app-layout>

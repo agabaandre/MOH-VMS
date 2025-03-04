@@ -73,7 +73,6 @@ class VehicleController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'department_id' => 'required|integer',
             'registration_date' => 'required',
@@ -86,6 +85,7 @@ class VehicleController extends Controller
             'driver_id' => 'nullable|integer',
             'vendor_id' => 'nullable|integer',
             'seat_capacity' => 'nullable|integer',
+            'purchase_value' => 'nullable|numeric|min:0',
         ]);
 
         // Handle image upload
@@ -130,7 +130,6 @@ class VehicleController extends Controller
     public function update(Request $request, Vehicle $vehicle)
     {
         $data = $request->validate([
-            'name' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'department_id' => 'required|integer',
             'registration_date' => 'required',
@@ -143,21 +142,34 @@ class VehicleController extends Controller
             'driver_id' => 'nullable|integer',
             'vendor_id' => 'nullable|integer',
             'seat_capacity' => 'nullable|integer',
+            'purchase_value' => 'nullable|numeric|min:0',
             'is_active' => 'required|boolean',
             'off_board_date' => 'required_if:is_active,0|nullable|date',
             'off_board_remarks' => 'required_if:is_active,0|nullable|string',
+            'off_board_lot_number' => 'required_if:is_active,0|nullable|string',
+            'off_board_buyer' => 'required_if:is_active,0|nullable|string',
+            'off_board_amount' => 'required_if:is_active,0|nullable|numeric|min:0',
+            'off_board_reason' => 'required_if:is_active,0|nullable|string',
         ]);
 
         // If vehicle is being off-boarded
         if (!$data['is_active'] && $vehicle->is_active) {
             $data['off_board_date'] = $request->off_board_date;
             $data['off_board_remarks'] = $request->off_board_remarks;
+            $data['off_board_lot_number'] = $request->off_board_lot_number;
+            $data['off_board_buyer'] = $request->off_board_buyer;
+            $data['off_board_amount'] = $request->off_board_amount;
+            $data['off_board_reason'] = $request->off_board_reason;
         }
 
         // If vehicle is being reactivated
         if ($data['is_active'] && !$vehicle->is_active) {
             $data['off_board_date'] = null;
             $data['off_board_remarks'] = null;
+            $data['off_board_lot_number'] = null;
+            $data['off_board_buyer'] = null;
+            $data['off_board_amount'] = null;
+            $data['off_board_reason'] = null;
         }
 
         // Handle image upload

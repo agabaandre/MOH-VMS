@@ -82,11 +82,14 @@ class InventoryPartsController extends Controller
             'location_id' => 'required|integer|exists:inventory_locations,id',
             'name' => 'required|string|max:255|unique:inventory_parts,name',
             'description' => 'nullable|string',
-            'qty' => 'integer|min:0',
             'unit_id' => 'required|integer|exists:inventory_units,id',
             'remarks' => 'nullable|string',
             'is_active' => 'required|boolean',
         ]);
+
+        // Force qty to 0
+        $data['qty'] = 0;
+        
         $item = InventoryParts::create($data);
 
         return response()->success($item, localize('Item Created Successfully'), 201);
@@ -127,11 +130,14 @@ class InventoryPartsController extends Controller
             'location_id' => 'required|integer|exists:inventory_locations,id',
             'name' => 'required|string|max:255|unique:inventory_parts,name,' . $parts->id . ',id',
             'description' => 'nullable|string',
-            'qty' => 'integer|min:0',
             'unit_id' => 'required|integer|exists:inventory_units,id',
             'remarks' => 'nullable|string',
             'is_active' => 'required|boolean',
         ]);
+
+        // Force qty to 0 
+        $data['qty'] = 0;
+
         $parts->update($data);
 
         return response()->success($parts, localize('Item Updated Successfully'), 200);

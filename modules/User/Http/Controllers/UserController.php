@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Fortify\Rules\Password;
 use Modules\User\DataTables\UserDataTable;
+use App\Services\NotificationService;
 
 class UserController extends Controller
 {
@@ -112,6 +113,10 @@ class UserController extends Controller
         $user = User::create($data)->assignRole($data['role']);
 
         $user->syncPermissions($data['permissions'] ?? []);
+
+        // Send welcome notification to new user
+        $notificationService = new NotificationService();
+        $notificationService->sendWelcomeNotification($user);
 
         // flash message
         Session::flash('success', 'Successfully Stored new user data.');

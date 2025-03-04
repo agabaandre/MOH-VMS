@@ -214,3 +214,95 @@ function changeCategory(i) {
     // parts select value clear
     $(`#parts-id-${i}`).val(null).trigger("change");
 }
+
+$(document).ready(function () {
+    let purchaseTable = $("#purchase-table");
+    let tbody = purchaseTable.find("tbody");
+
+    // Add row handler
+    function addRow() {
+        let row = `
+            <tr>
+                <td>
+                    <select class="form-control category-select" required>
+                        <option value="">Select Category</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control parts-select" required>
+                        <option value="">Select Item</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="form-control unit-display" readonly>
+                </td>
+                <td>
+                    <input type="number" class="form-control qty" required min="1">
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button>
+                </td>
+            </tr>
+        `;
+        tbody.append(row);
+        initializeSelects();
+    }
+
+    // Initialize select2 and event handlers
+    function initializeSelects() {
+        $(".category-select").select2({
+            ajax: {
+                url: purchaseTable.data("inventory-category-url"),
+                dataType: "json",
+                delay: 250,
+                processResults: function (data) {
+                    return {
+                        results: data,
+                    };
+                },
+                cache: true,
+            },
+        });
+
+        $(".parts-select")
+            .select2({
+                ajax: {
+                    url: purchaseTable.data("parts-url"),
+                    dataType: "json",
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            category_id: $(this)
+                                .closest("tr")
+                                .find(".category-select")
+                                .val(),
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data,
+                        };
+                    },
+                    cache: true,
+                },
+            })
+            .on("select2:select", function (e) {
+                let data = e.params.data;
+                $(this).closest("tr").find(".unit-display").val(data.unit);
+            });
+    }
+
+    // Initial row
+    addRow();
+
+    // Add row button handler
+    $(document).on("click", ".add-row", addRow);
+
+    // Remove row handler
+    $(document).on("click", ".remove-row", function () {
+        if (tbody.find("tr").length > 1) {
+            $(this).closest("tr").remove();
+        }
+    });
+});

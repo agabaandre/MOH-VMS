@@ -43,7 +43,7 @@
 
                 <div class="form-group row mb-1">
                     <label for="driver"
-                        class="col-sm-5 col-form-label justify-content-start text-left">@localize('Driven By') </label>
+                        class="col-sm-5 col-form-label justify-content-start text-left">@localize('Driver') </label>
                     <div class="col-sm-7">
                         <select class="form-control basic-single" name="driver_id" id="driver" tabindex="-1"
                             aria-hidden="true">

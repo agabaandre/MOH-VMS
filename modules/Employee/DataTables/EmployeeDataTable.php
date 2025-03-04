@@ -127,6 +127,7 @@ class EmployeeDataTable extends DataTable
             Column::make('DT_RowIndex')->title(localize('SL'))->searchable(false)->orderable(false)->width(30)->addClass('text-center'),
             Column::make('name')->title(localize('Name'))->defaultContent('N/A'),
             Column::make('nid')->title(localize('NID'))->defaultContent('N/A'),
+            Column::make('card_number')->title(localize('Card Number'))->defaultContent('N/A'),
             Column::make('department')->title(localize('Department'))->defaultContent('N/A'),
             Column::make('position')->title(localize('Designation'))->defaultContent('N/A'),
             Column::make('phone')->title(localize('Phone'))->defaultContent('N/A'),
