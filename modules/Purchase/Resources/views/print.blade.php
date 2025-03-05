@@ -4,162 +4,247 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Purchase Order - {{ $item->code }}</title>
     <style>
+        @page { margin: 1.5cm 2cm; }
         body { 
-            font-family: Arial, sans-serif; 
-            position: relative;
+            font-family: Arial, sans-serif;
+            line-height: 1.3;
+            color: #333;
+            margin: 0;
+            padding: 0;
         }
-        @page {
-            margin: 0.5cm 1cm;
-        }
-        .watermark {
-            position: fixed;
-            top: 35%;
-            left: 20%;
-            transform: translate(-50%, -50%);
-            opacity: 0.1;
-            z-index: -1;
-            width: 60%;
-            height: auto;
-        }
-        .header { 
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 10px;
-            position: relative;
-        }
-        .logo {
-            width: 120px;
-            height: auto;
-            margin-top: 5px;
-        }
-        .header-text {
-            flex-grow: 1;
-            text-align: center;
-            padding-left: 80px;
-            margin-right: 80px;
-            position: absolute;
-            left: 0;
-            right: 0;
-        }
-        .ministry-header {
-            font-size: 18px;
+        .document-title {
+            text-align: right;
+            font-size: 22px;
             font-weight: bold;
-            margin-bottom: 5px;
+            color: #2c3e50;
+            margin-bottom: 20px;
         }
-        .sub-header {
-            font-size: 16px;
-            margin-bottom: 5px;
+        .org-header {
+            margin-bottom: 40px;
         }
-        .form-title {
+        .org-logo {
+            float: left;
+            width: 80px;
+        }
+        .org-details {
+            margin-left: 100px;
+        }
+        .org-name {
             font-size: 16px;
             font-weight: bold;
-            text-decoration: underline;
         }
-        .details-table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-bottom: 20px;
-            font-size: 11px;
+        .org-address {
+            font-size: 12px;
+            color: #666;
         }
-        .details-table td { 
-            padding: 5px; 
+        .po-details {
+            clear: both;
+            padding-top: 20px;
+            margin-bottom: 30px;
+        }
+        .po-box {
             border: 1px solid #ddd;
+            padding: 10px;
+            width: 45%;
+            float: right;
+        }
+        .po-box table {
+            width: 100%;
+            font-size: 12px;
+        }
+        .po-box td {
+            padding: 3px 0;
+        }
+        .po-box td:first-child {
+            font-weight: bold;
+            width: 40%;
+        }
+        .vendor-details {
+            width: 45%;
+            float: left;
+        }
+        .vendor-details h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .vendor-details p {
+            font-size: 12px;
+            margin: 0 0 3px 0;
         }
         .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 11px;
+            margin: 30px 0;
+            clear: both;
         }
-        .items-table th { 
+        .items-table th {
+            background: #f8f9fa;
+            border-bottom: 2px solid #ddd;
+            padding: 8px;
             font-size: 12px;
-            font-weight: bold;
-        }
-        .items-table th, .items-table td {
-            border: 1px solid #ddd;
-            padding: 6px;
             text-align: left;
         }
-        .signature-section {
-            margin-top: 50px;
+        .items-table td {
+            padding: 8px;
+            font-size: 12px;
+            border-bottom: 1px solid #eee;
         }
-        .signature-line {
-            border-top: 1px solid #000;
-            width: 200px;
-            display: inline-block;
-            margin: 0 20px;
+        .items-table .amount-col {
+            text-align: right;
+        }
+        .total-section {
+            float: right;
+            width: 35%;
+        }
+        .total-table {
+            width: 100%;
+            font-size: 12px;
+            margin-bottom: 30px;
+        }
+        .total-table td {
+            padding: 5px;
+        }
+        .total-table .total-row {
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 2px solid #ddd;
+        }
+        .total-table td:last-child {
+            text-align: right;
+        }
+        .signature-section {
+            clear: both;
+            padding-top: 40px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature-block {
+            width: 30%;
+            text-align: center;
+        }
+        .signature-box {
+            height: 50px;
+            border-bottom: 1px solid #000;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .signature-box img {
+            max-height: 40px;
+            max-width: 120px;
+        }
+        .signature-name {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        .signature-title {
+            font-size: 10px;
+            color: #666;
+            margin-top: 3px;
         }
     </style>
 </head>
 <body>
-    <img src="{{ public_path('storage/MoH-Logo.png') }}" class="watermark">
+    <div class="document-title">PURCHASE ORDER</div>
     
-    <div class="header">
-        <img src="{{ public_path('storage/MoH-Logo.png') }}" class="logo">
-        <div class="header-text">
-            <div class="ministry-header">MINISTRY OF HEALTH</div>
-            <div class="sub-header">TRANSPORT OFFICE</div>
-            <div class="form-title">PURCHASE ORDER</div>
+    <div class="org-header">
+        <img src="{{ public_path('storage/MoH-Logo.png') }}" class="org-logo">
+        <div class="org-details">
+            <div class="org-name">MINISTRY OF HEALTH</div>
+            <div class="org-address">
+                Transport Office<br>
+                Commonwealth Drive, Bandar Seri Begawan<br>
+                Brunei Darussalam
+            </div>
         </div>
     </div>
 
-    <table class="details-table">
-        <tr>
-            <td><strong>Purchase Order No:</strong></td>
-            <td>{{ $item->code }}</td>
-            <td><strong>Date:</strong></td>
-            <td>{{ $item->date }}</td>
-        </tr>
-        <tr>
-            <td><strong>Vendor:</strong></td>
-            <td>{{ $item->vendor->name ?? 'N/A' }}</td>
-            <td><strong>Status:</strong></td>
-            <td>{{ ucfirst($item->status) }}</td>
-        </tr>
-    </table>
+    <div class="po-details">
+        <div class="vendor-details">
+            <h3>VENDOR</h3>
+            <p><strong>{{ $item->vendor->name ?? 'N/A' }}</strong></p>
+            <p>{{ $item->vendor->address ?? '' }}</p>
+            <p>{{ $item->vendor->phone ?? '' }}</p>
+        </div>
 
-    <div><strong>ITEMS</strong></div>
+        <div class="po-box">
+            <table>
+                <tr>
+                    <td>PO Number:</td>
+                    <td>{{ $item->code }}</td>
+                </tr>
+                <tr>
+                    <td>Date Issued:</td>
+                    <td>{{ $item->date }}</td>
+                </tr>
+                <tr>
+                    <td>Status:</td>
+                    <td>{{ ucfirst($item->status) }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
     <table class="items-table">
         <thead>
             <tr>
-                <th>Category</th>
-                <th>Item</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Total Price</th>
+                <th width="5%">No.</th>
+                <th width="20%">Category</th>
+                <th width="35%">Item Description</th>
+                <th width="10%">Qty</th>
+                <th width="15%">Unit Price</th>
+                <th width="15%">Amount</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($item->details as $detail)
+            @foreach ($item->details as $index => $detail)
             <tr>
+                <td>{{ $index + 1 }}</td>
                 <td>{{ $detail->category->name ?? 'N/A' }}</td>
                 <td>{{ $detail->parts->name ?? 'N/A' }}</td>
                 <td>{{ number_format($detail->qty, 2) }}</td>
-                <td>{{ number_format($detail->price, 2) }}</td>
-                <td>{{ number_format($detail->total, 2) }}</td>
+                <td class="amount-col">{{ number_format($detail->price, 2) }}</td>
+                <td class="amount-col">{{ number_format($detail->total, 2) }}</td>
             </tr>
             @endforeach
-            <tr>
-                <td colspan="4" style="text-align: right;"><strong>Total:</strong></td>
-                <td>{{ number_format($item->total, 2) }}</td>
-            </tr>
         </tbody>
     </table>
 
+    <div class="total-section">
+        <table class="total-table">
+            <tr>
+                <td>Subtotal:</td>
+                <td>{{ number_format($item->total, 2) }}</td>
+            </tr>
+            <tr class="total-row">
+                <td>Total:</td>
+                <td>UGX {{ number_format($item->total, 2) }}</td>
+            </tr>
+        </table>
+    </div>
+
     <div class="signature-section">
-        <div>
-            <span>Prepared by:</span>
-            <span class="signature-line"></span>
+        <div class="signature-block">
+            <div class="signature-box">
+                @if($user->signature_path)
+                    <img src="{{ storage_path('app/public/' . $user->signature_path) }}" alt="Signature">
+                @endif
+            </div>
+            <div class="signature-name">{{ $user->name }}</div>
+            <div class="signature-title">Prepared by</div>
         </div>
-        <div style="margin: 20px 0;">
-            <span>Reviewed by:</span>
-            <span class="signature-line"></span>
+        <div class="signature-block">
+            <div class="signature-box"></div>
+            <div class="signature-name">&nbsp;</div>
+            <div class="signature-title">Reviewed by</div>
         </div>
-        <div>
-            <span>Approved by:</span>
-            <span class="signature-line"></span>
+        <div class="signature-block">
+            <div class="signature-box"></div>
+            <div class="signature-name">&nbsp;</div>
+            <div class="signature-title">Approved by</div>
         </div>
     </div>
 </body>

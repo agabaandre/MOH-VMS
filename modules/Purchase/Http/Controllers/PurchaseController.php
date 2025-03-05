@@ -10,6 +10,7 @@ use Modules\Inventory\Entities\InventoryParts;
 use Modules\Inventory\Entities\Vendor;
 use Modules\Purchase\DataTables\PurchaseDataTable;
 use Modules\Purchase\Entities\Purchase;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PurchaseController extends Controller
 {
@@ -277,5 +278,31 @@ class PurchaseController extends Controller
         $purchase->update(['status' => $request->status]);
 
         return \response()->success($purchase, localize('item Status Updated Successfully'), 200);
+    }
+
+    /**
+     * Export purchase order as PDF
+     */
+    public function print($id)
+    {
+        $item = Purchase::with([
+            'vendor:id,name',
+            'details',
+            'details.category:id,name',
+            'details.parts:id,name'
+        ])->findOrFail($id);
+        
+        $user = auth()->user();
+        
+        $pdf = PDF::loadView('purchase::print', compact('item', 'user'));
+        $pdf->setPaper('A4');
+        
+        $pdf->setOptions([
+            'isPhpEnabled' => true,
+            'isHtml5ParserEnabled' => true,
+            'chroot' => public_path('storage')
+        ]);
+        
+        return $pdf->download('purchase-order-'.$item->code.'.pdf');
     }
 }
