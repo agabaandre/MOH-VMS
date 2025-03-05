@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Modules\Permission\Entities\Permission;
 use Modules\Role\Entities\Role;
+use App\Models\User;
 
 class RoleTableSeeder extends Seeder
 {
@@ -17,6 +17,14 @@ class RoleTableSeeder extends Seeder
      */
     public function run()
     {
+        // Clear only roles and permissions
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        Role::truncate();
+        Permission::truncate();
+        DB::table('model_has_roles')->truncate();
+        DB::table('role_has_permissions')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
         $permissions = [
             'General' => [],
             'Dashboard' => [],
@@ -57,6 +65,7 @@ class RoleTableSeeder extends Seeder
                 'inventory_parts_usage_management',
                 'inventory_vendor_management',
                 'expense_management',
+                'expense_approval',
                 'expense_type_management',
                 'trip_type_management',
                 'inventory_stock_management',
@@ -64,9 +73,11 @@ class RoleTableSeeder extends Seeder
             'Vehicle Maintenance' => [
                 'vehicle_maintenance_management',
                 'vehicle_maintenance_type_management',
+                'vehicle_maintenance_approval',
             ],
             'Purchase' => [
                 'purchase_management',
+                'purchase_approval',
             ],
             'Report' => [
                 'report_management',
@@ -92,6 +103,7 @@ class RoleTableSeeder extends Seeder
                 'language_setting_management',
             ],
         ];
+        
         $roles = [
             'User' => [],
         ];
@@ -113,29 +125,10 @@ class RoleTableSeeder extends Seeder
             $role->givePermissionTo($permissions);
         }
 
-        $users = [
-            [
-                'name' => 'Admin',
-                'email' => 'admin@gmail.com',
-                'password' => Hash::make('admin'),
-                'email_verified_at' => now(),
-                'status' => 'Active',
-            ], [
-                'name' => 'User',
-                'email' => 'user@gmail.com',
-                'password' => Hash::make('user'),
-                'email_verified_at' => now(),
-                'status' => 'Active',
-            ],
-        ];
-
-        foreach ($users as $user) {
-            User::create($user);
-        }
-
-        if (count($users)) {
-            User::find(1)->assignRole('Administrator');
-            User::find(2)->assignRole('User');
+        // Find and update Admin user's permissions
+        $adminUser = User::where('name', 'Admin')->first();
+        if ($adminUser) {
+            $adminUser->syncRoles(['Administrator']);
         }
     }
 }

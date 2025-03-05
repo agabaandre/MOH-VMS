@@ -270,6 +270,10 @@ class PurchaseController extends Controller
      */
     public function statusUpdate(Purchase $purchase, Request $request)
     {
+        if (!auth()->user()->can('purchase_approval')) {
+            return response()->error(null, localize('Unauthorized action.'), 403);
+        }
+        
         $purchase->update(['status' => $request->status]);
 
         return \response()->success($purchase, localize('item Status Updated Successfully'), 200);

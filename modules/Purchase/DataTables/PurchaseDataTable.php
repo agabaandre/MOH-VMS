@@ -127,6 +127,10 @@ class PurchaseDataTable extends DataTable
 
     private function statusBtn($i): string
     {
+        if (!auth()->user()->can('purchase_approval')) {
+            return Purchase::getStatues()[$i->status] ?? 'N/A';
+        }
+
         $status = '<select class="form-control" name="status" id="status_id_'.$i->id.'" ';
         $status .= 'onchange="userStatusUpdate(\''.route(config('theme.rprefix').'.status-update', $i->id).'\','.$i->id.',\''.$i->status.'\')">';
 
@@ -136,7 +140,6 @@ class PurchaseDataTable extends DataTable
         }
 
         $status .= '</select>';
-
         return $status;
     }
 }
