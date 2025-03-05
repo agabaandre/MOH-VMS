@@ -91,17 +91,25 @@ class ProfileInformationController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.auth()->user()->id.',id'],
         ]);
+        
         $user = auth()->user();
-        if ($request->hasFile('avatar')) {
-            $request->validate([
-                'avatar' => 'image',
-            ]);
+        $data = $request->all();
 
-            $request['profile_photo_path'] = $request->avatar->store('users');
+        if ($request->hasFile('avatar')) {
+            $request->validate(['avatar' => 'image']);
+            $data['profile_photo_path'] = $request->avatar->store('users');
             $user->profile_photo_path ? \delete_file($user->profile_photo_path) : null;
         }
+
+        if ($request->hasFile('signature')) {
+            $request->validate(['signature' => 'image']);
+            $data['signature_path'] = $request->signature->store('signatures');
+            $user->signature_path ? \delete_file($user->signature_path) : null;
+        }
+
         // update user data
-        $user->update($request->all());
+        $user->update($data);
+        
         // flash message
         Session::flash('success', 'Successfully Updated user account.');
 

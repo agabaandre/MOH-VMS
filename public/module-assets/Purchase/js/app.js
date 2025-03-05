@@ -1,5 +1,4 @@
 $(function () {
-    // your code here
     $details = JSON.parse($("#purchase-table tbody").attr("data-details"));
     if ($details.length > 0) {
         $details.forEach((item, i) => {
@@ -22,8 +21,8 @@ function addNewRow(element, item = null) {
     let row = `<tr id="row-${i}">`;
     row += `<td>
                 <select name="collection[${i}][category_id]" id="category-id-${i}" class="form-control" data-ajax-url="${inventoryUrl}" onchange="changeCategory(${i})" data-placeholder="${localize(
-                    "Choose Inventory Category",
-                )}" required >`;
+        "Choose Inventory Category"
+    )}" required >`;
 
     if (item && item.category) {
         row += `<option value="${item.category.id}" selected >${item.category.name}</option>`;
@@ -31,13 +30,26 @@ function addNewRow(element, item = null) {
     row += `</select><label class="error" for="category-id-${i}"></label></td>`;
     row += `<td>
                 <select name="collection[${i}][parts_id]" id="parts-id-${i}" class="form-control" data-ajax-url="${partsUrl}" data-placeholder="${localize(
-                    "Choose Parts",
-                )}"  required>`;
+        "Choose Parts"
+    )}"  required>`;
 
     if (item && item.parts) {
         row += `<option value="${item.parts.id}" selected >${item.parts.name}</option>`;
     }
     row += `</select><label class="error" for="parts-id-${i}"></label></td>`;
+
+    // Add Unit Type Input
+    row += `<td>
+                <input type="text" class="form-control" id="unit-type-${i}" 
+                name="collection[${i}][unit_type]" 
+                value="${
+                    item && item.parts && item.parts.unit
+                        ? item.parts.unit.abbreviation
+                        : ""
+                }" 
+                readonly>
+            </td>`;
+
     row += `<td>
                 <input type="number" class="form-control arrow-hidden" onclick="selectAll(this)" onchange="calculateTotal()" oninput="calculateTotal()"  id="quantity-${i}"
                 name="collection[${i}][qty]"
@@ -166,8 +178,6 @@ function categorySelect2AjaxInit(i) {
 
 function partsSelect2AjaxInit(i) {
     element = `#parts-id-${i}`;
-
-    // Get all options value and text from the original select element
     let options = $(element)
         .find("option")
         .map(function () {
@@ -176,8 +186,8 @@ function partsSelect2AjaxInit(i) {
                 text: $(this).text(),
             };
         })
-        .get(); // Convert jQuery map result to a plain array
-    // Initialize select2 and fetch data using AJAX call
+        .get();
+
     $(element).select2({
         width: "100%",
         ajax: {
@@ -187,7 +197,6 @@ function partsSelect2AjaxInit(i) {
             delay: 250,
             data: function (params) {
                 return {
-                    category_id: $(`#category-id-${i}`).val(),
                     search: params.term,
                     page: params.page || 1,
                 };
@@ -195,6 +204,15 @@ function partsSelect2AjaxInit(i) {
             processResults: function (data, params) {
                 params.page = params.page || 1;
                 results = data.data;
+
+                // Modify the processResults to include unit information
+                results = results.map((item) => ({
+                    id: item.id,
+                    text: item.text,
+                    unit_name: item.unit ? item.unit.name : "",
+                    unit_abbreviation: item.unit ? item.unit.abbreviation : "",
+                }));
+
                 // filter options using search term
                 if (params.term) {
                     filterOptions = options.filter(function (item) {
@@ -220,6 +238,13 @@ function partsSelect2AjaxInit(i) {
             searching: function () {
                 return localize("Loading...") ?? "Loading...";
             },
+        },
+        templateSelection: function (data) {
+            // Update unit type input when a part is selected
+            if (data.unit_abbreviation) {
+                $(`#unit-type-${i}`).val(data.unit_abbreviation);
+            }
+            return data.text;
         },
     });
 }

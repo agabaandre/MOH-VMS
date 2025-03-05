@@ -14,4 +14,4 @@ import "./bootstrap";
 
 // import "./components/Example";
 // Chat module resources
-import "./../../modules/Chat/Resources/js/app";
+// import "./../../modules/Chat/Resources/js/app";

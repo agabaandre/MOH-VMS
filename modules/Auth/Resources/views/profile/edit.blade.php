@@ -96,6 +96,24 @@
                                         @enderror
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>
+                                        <label for="signature" class="font-black">{{ localize('Signature') }}</label>
+                                    </td>
+                                    <td>
+                                        <input type="file" class="form-control" name="signature" id="signature"
+                                            onchange="get_img_url(this, '#signature_image');" accept="image/*">
+                                        @if(auth()->user()->signature_url)
+                                            <img id="signature_image" src="{{ auth()->user()->signature_url }}" 
+                                                width="200px" class="mt-2">
+                                        @else
+                                            <img id="signature_image" src="" width="200px" class="mt-2 d-none">
+                                        @endif
+                                        @error('signature')
+                                            <p class="text-danger pt-2">{{ $message }}</p>
+                                        @enderror
+                                    </td>
+                                </tr>
                             </table>
                             <div class="row">
                                 <div class="col-md-12 text-center mt-5">

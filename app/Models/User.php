@@ -13,6 +13,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Modules\Auth\Traits\HasProfilePhoto;
 use Spatie\Permission\Traits\HasRoles;
+use Storage;
 
 class User extends Authenticatable
 {
@@ -39,6 +40,7 @@ class User extends Authenticatable
         'email',
         'password',
         'profile_photo_path',
+        'signature_path',
         'phone',
         'gender',
         'age',
@@ -72,6 +74,7 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'signature_url',
     ];
 
     /**
@@ -96,5 +99,15 @@ class User extends Authenticatable
             'Female' => 'Female',
             'Others' => 'Others',
         ];
+    }
+
+    /**
+     * Get the URL of the user's signature.
+     */
+    public function getSignatureUrlAttribute()
+    {
+        return $this->signature_path
+            ? Storage::url($this->signature_path)
+            : null;
     }
 }

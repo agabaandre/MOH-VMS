@@ -66,6 +66,19 @@
                                                         {{ auth()->user()->age ?? '---' }}
                                                     </td>
                                                 </tr>
+                                                <tr>
+                                                    <th class="white">
+                                                        <i class="fa-solid fa-signature"></i>
+                                                    </th>
+                                                    <td class="white text-start">
+                                                        @if(auth()->user()->signature_url)
+                                                            <img src="{{ auth()->user()->signature_url }}" 
+                                                                alt="Signature" width="200">
+                                                        @else
+                                                            {{ localize('No signature uploaded') }}
+                                                        @endif
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>

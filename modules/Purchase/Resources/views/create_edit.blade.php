@@ -54,17 +54,16 @@
                             data-parts-url="{{ route('admin.purchase.get-parts') }}">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th width="27%">
+                                    <th width="22%">
                                         @localize('Category')
                                         <span class="text-danger">*</span>
                                     </th>
-                                    <th width="27%">
+                                    <th width="22%">
                                         @localize('Item')
                                         <span class="text-danger">*</span>
                                     </th>
                                     <th width="10%">
                                         @localize('Unit')
-                                        <span class="text-danger">*</span>
                                     </th>
                                     <th width="15%">
                                         @localize('Quantity')
@@ -113,6 +112,6 @@
         <script src="{{ admin_asset('vendor/select2/dist/js/select2.min.js') }}"></script>
     @endpush
     @push('js')
-        <script src="{{ module_asset('Purchase/js/app.min.js') }}"></script>
+        <script src="{{ module_asset('Purchase/js/app.js') }}"></script>
     @endpush
 </x-app-layout>

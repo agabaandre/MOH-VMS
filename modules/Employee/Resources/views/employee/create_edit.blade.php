@@ -72,7 +72,7 @@
                 </div>
 
                 <div class="form-group row my-2">
-                    <label for="referance" class="col-sm-5 col-form-label">@localize('Reference Name') </label>
+                    <label for="referance" class="col-sm-5 col-form-label">@localize('Reference/Next Of Kin') </label>
                     <div class="col-sm-7">
                         <input name="reference_name" class="form-control" type="text"
                             placeholder="Reference Name" id="referance"
@@ -80,7 +80,7 @@
                     </div>
                 </div>
                 <div class="form-group row my-2">
-                    <label for="ref_address" class="col-sm-5 col-form-label">@localize('Reference Address') </label>
+                    <label for="ref_address" class="col-sm-5 col-form-label">@localize('Reference/Next Of Kin Address') </label>
                     <div class="col-sm-7">
                         <input name="reference_address" class="form-control" type="text"
                             placeholder="@localize('Reference Address')" id="ref_address"
@@ -88,7 +88,7 @@
                     </div>
                 </div>
                 <div class="form-group row my-2">
-                    <label for="ref_email" class="col-sm-5 col-form-label">@localize('Reference Email') </label>
+                    <label for="ref_email" class="col-sm-5 col-form-label">@localize('Reference/Next Of Kin Email') </label>
                     <div class="col-sm-7">
                         <input name="reference_email" class="form-control" type="email"
                             placeholder="@localize('Reference Email')" id="ref_email"
