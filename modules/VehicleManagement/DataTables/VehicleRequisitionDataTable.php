@@ -147,9 +147,13 @@ class VehicleRequisitionDataTable extends DataTable
      */
     private function statusBtn($i): string
     {
+        if (!auth()->user()->can('vehicle_requisition_approval')) {
+            return $i->getStatues()[$i->status] ?? 'N/A';
+        }
+
         $status = '<select class="form-control" name="status" id="status_id_'.$i->id.'" ';
         $status .= 'onchange="userStatusUpdate(\''.route(config('theme.rprefix').'.status-update', $i->id).'\','.$i->id.',\''.$i->status.'\')">';
-
+        
         foreach ($i->getStatues() as $key => $value) {
             $selected = $i->status == $key ? 'selected' : '';
             $status .= '<option value="'.$key.'" '.$selected.'>'.$value.'</option>';

@@ -46,6 +46,7 @@ class RoleTableSeeder extends Seeder
                 'vehicle_requisition_purpose_management',
                 'vehicle_route_management',
                 'pick_drop_requisition',
+                'vehicle_requisition_approval',
             ],
             'Vehicle Insurance' => [
                 'vehicle_insurance_company_management',

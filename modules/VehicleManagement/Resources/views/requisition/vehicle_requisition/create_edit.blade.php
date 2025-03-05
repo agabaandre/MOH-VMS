@@ -100,7 +100,7 @@
 
                     <div class="col-sm-7">
                         <input name="number_of_days" required class="form-control" type="text"
-                            placeholder="@localize('Tolarance Duration')" id="number_of_days"
+                            placeholder="@localize('Duration in days')" id="number_of_days"
                             value="{{ isset($item) ? $item->number_of_days : old('number_of_days') }}">
                     </div>
                 </div>

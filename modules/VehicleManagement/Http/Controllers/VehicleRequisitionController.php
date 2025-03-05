@@ -150,8 +150,11 @@ class VehicleRequisitionController extends Controller
      */
     public function statusUpdate(VehicleRequisition $requisition, Request $request)
     {
-        $requisition->update(['status' => $request->status]);
+        if (!auth()->user()->can('vehicle_requisition_approval')) {
+            return response()->error(localize('Unauthorized action.'), 403);
+        }
 
+        $requisition->update(['status' => $request->status]);
         return \response()->success($requisition, localize('item Status Updated Successfully'), 200);
     }
 }
