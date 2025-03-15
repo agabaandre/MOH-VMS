@@ -7,7 +7,9 @@ use App\Traits\GenerateCode;
 use App\Traits\NotifiableModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Inventory\Entities\InventoryParts;
 use Modules\Inventory\Entities\Vendor;
+use Illuminate\Support\Facades\DB;
 
 class Purchase extends Model
 {
@@ -55,14 +57,60 @@ class Purchase extends Model
      *
      * @param string $status
      * @return void
+     * @throws \Exception
      */
     public function updateStatus($status)
     {
-        $this->status = $status;
-        $this->save();
+        DB::beginTransaction();
+        try {
+            $oldStatus = $this->status;
+            
+            // If trying to change from approved to another status, check time constraint
+            if ($oldStatus === 'approved' && ($status === 'pending' || $status === 'rejected')) {
+                // Check if more than one hour has passed since approval
+                // Since we only update the status in this method, we can use updated_at to track when status last changed
+                if (now()->diffInHours($this->updated_at) >= 1) {
+                    throw new \Exception('Status cannot be changed from approved after one hour has passed');
+                }
+            }
+            
+            $this->status = $status;
+            $this->save();
 
-        if (in_array($status, ['approved', 'rejected'])) {
-            $this->sendApprovalNotification();
+            $this->loadMissing('details'); // Ensure details are loaded
+
+            // Update inventory quantities when purchase is approved
+            if ($status === 'approved' && $oldStatus !== 'approved') {
+                // Add inventory quantities when approving
+                foreach ($this->details as $detail) {
+                    $part = InventoryParts::find($detail->parts_id);
+                    if ($part) {
+                        $part->qty += $detail->qty;
+                        $part->save();
+                    }
+                }
+            } 
+            // Handle reversal from approved to pending or rejected
+            elseif ($oldStatus === 'approved' && ($status === 'pending' || $status === 'rejected')) {
+                // Remove inventory quantities when un-approving
+                foreach ($this->details as $detail) {
+                    $part = InventoryParts::find($detail->parts_id);
+                    if ($part) {
+                        // Ensure quantity doesn't go below zero
+                        $part->qty = max(0, $part->qty - $detail->qty);
+                        $part->save();
+                    }
+                }
+            }
+
+            if (in_array($status, ['approved', 'rejected'])) {
+                $this->sendApprovalNotification();
+            }
+            
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
         }
     }
 

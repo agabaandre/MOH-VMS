@@ -135,8 +135,7 @@ class InventoryPartsController extends Controller
             'is_active' => 'required|boolean',
         ]);
 
-        // Force qty to 0 
-        $data['qty'] = 0;
+        // Don't override existing quantity on update
 
         $parts->update($data);
 

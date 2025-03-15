@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Employee\Database\factories\EmployeeFactory;
+use Modules\VehicleManagement\Entities\Facility;
 
 class Employee extends Model
 {
@@ -17,7 +18,7 @@ class Employee extends Model
         'department_id',
         'position_id',
         'nid',
-        'card_number', // Add this line
+        'card_number',
         'phone',
         'email',
         'blood_group',
@@ -31,6 +32,7 @@ class Employee extends Model
         'reference_email',
         'reference_address',
         'avatar_path',
+        'facility_id', // Added facility_id to ensure it's fillable
     ];
 
     protected $casts = [
@@ -54,6 +56,11 @@ class Employee extends Model
     public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class);
+    }
+    
+    public function facility(): BelongsTo
+    {
+        return $this->belongsTo(Facility::class);
     }
 
     protected static function newFactory()

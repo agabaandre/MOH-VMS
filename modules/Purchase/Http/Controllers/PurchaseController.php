@@ -275,9 +275,17 @@ class PurchaseController extends Controller
             return response()->error(null, localize('Unauthorized action.'), 403);
         }
         
-        $purchase->update(['status' => $request->status]);
-
-        return \response()->success($purchase, localize('item Status Updated Successfully'), 200);
+        try {
+            $purchase->updateStatus($request->status);
+            return \response()->success($purchase, localize('Item Status Updated Successfully'), 200);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            // Check for our specific error message
+            if (strpos($message, 'Status cannot be changed') !== false) {
+                return response()->error(null, localize($message), 400);
+            }
+            return response()->error(null, localize('Failed to update status: ' . $message), 500);
+        }
     }
 
     /**

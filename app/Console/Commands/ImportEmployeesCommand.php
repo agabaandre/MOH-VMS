@@ -50,8 +50,8 @@ class ImportEmployeesCommand extends Command
             ->where(function($q) use ($mohFacility) {
                 $q->whereNull('nid')
                   ->orWhere('nid', '')
-                  ->orWhereNull('card_number')  // Add this line
-                  ->orWhere('card_number', '')  // Add this line
+                  ->orWhereNull('card_number')
+                  ->orWhere('card_number', '')
                   ->orWhereNull('facility_id')
                   ->orWhere('facility_id', '!=', $mohFacility->id);
             });
@@ -59,17 +59,21 @@ class ImportEmployeesCommand extends Command
         $count = $query->count();
         
         if ($count > 0) {
+            // Count specific reasons for deletion for better logging
+            $nullCardCount = Employee::whereNull('card_number')->orWhere('card_number', '')->count();
+            
             // Delete associated drivers first
             Driver::whereIn('employee_id', $query->pluck('id'))->delete();
             
             // Then delete employees
             $query->delete();
             
-            $this->info("Deleted {$count} invalid records");
+            $this->info("Deleted {$count} invalid records (including {$nullCardCount} without card numbers)");
             Log::info("Deleted invalid employee records", [
                 'count' => $count,
                 'reasons' => [
                     'null_nin' => true,
+                    'null_card_number' => $nullCardCount,
                     'non_moh_facility' => true,
                     'null_facility' => true
                 ]
@@ -106,9 +110,9 @@ class ImportEmployeesCommand extends Command
             $skippedReasons = [
                 'missing_name' => 0,
                 'missing_nin' => 0,
-                'missing_card' => 0, // Add this line
+                'missing_card' => 0,
                 'non_moh' => 0,
-                'delete_prefix' => 0  // Add new reason
+                'delete_prefix' => 0
             ];
 
             $this->info("Starting import of {$totalEntries} employees in " . count($batches) . " batches...");
@@ -153,8 +157,12 @@ class ImportEmployeesCommand extends Command
                             continue;
                         }
 
+                        // Skip if missing Card Number - ensure this check is done before further processing
                         if (empty($entry['card_number'])) {
-                            Log::warning('Skipped entry: Missing Card Number', $entry);
+                            Log::warning('Skipped entry: Missing Card Number', [
+                                'name' => $fullName,
+                                'ipps' => $entry['ipps'] ?? null
+                            ]);
                             $skippedCount++;
                             $skippedReasons['missing_card']++;
                             $this->output->progressAdvance();
@@ -182,6 +190,13 @@ class ImportEmployeesCommand extends Command
                         $email = $entry['email'] ?? $this->generateEmailFromName($fullName);
                         $dob = $this->validateAndParseDate($entry['birth_date']);
 
+                        // Log card number to ensure we're capturing it correctly
+                        Log::debug('Processing employee with card number', [
+                            'name' => $fullName,
+                            'card_number' => $entry['card_number'],
+                            'ipps' => $entry['ipps'] ?? null
+                        ]);
+
                         $employee = Employee::updateOrCreate(
                             ['employee_code' => $entry['ipps']],
                             [
@@ -192,12 +207,21 @@ class ImportEmployeesCommand extends Command
                                 'email' => $email,
                                 'dob' => $dob,
                                 'nid' => $entry['nin'] ?? null,
-                                'card_number' => $entry['card_number'],
+                                'card_number' => $entry['card_number'], // Ensure card number is included
                                 'facility_id' => $facility ? $facility->id : null,
                                 'created_at' => now(),
                                 'updated_at' => now(),
                             ]
                         );
+
+                        // Verify card number was saved (debug check)
+                        if ($employee->card_number !== $entry['card_number']) {
+                            Log::warning('Card number mismatch after save', [
+                                'employee_id' => $employee->id,
+                                'expected' => $entry['card_number'],
+                                'actual' => $employee->card_number
+                            ]);
+                        }
 
                         if (strtolower($position->name) === 'car driver') {
                             $this->createDriver($employee, $entry);

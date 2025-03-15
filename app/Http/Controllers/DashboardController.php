@@ -9,6 +9,7 @@ use Modules\Employee\Entities\Employee;
 use Modules\Inventory\Entities\Expense;
 use Modules\Inventory\Entities\InventoryParts;
 use Modules\Purchase\Entities\PurchaseDetail;
+use Modules\Purchase\Entities\Purchase;
 use Modules\VehicleMaintenance\Entities\VehicleMaintenance;
 use Modules\VehicleMaintenance\Entities\VehicleMaintenanceDetail;
 use Modules\VehicleManagement\Entities\LegalDocumentation;
@@ -16,6 +17,7 @@ use Modules\VehicleManagement\Entities\PickupAndDrop;
 use Modules\VehicleManagement\Entities\VehicleRequisition;
 use Modules\VehicleRefueling\Entities\FuelRequisition;
 use Modules\VehicleManagement\Entities\Vehicle;
+use Modules\VehicleRefueling\Entities\VehicleRefueling;
 
 class DashboardController extends Controller
 {
@@ -76,13 +78,39 @@ class DashboardController extends Controller
 
         $reminders = LegalDocumentation::with(['vehicle', 'document_type'])->paginate(15);
 
-        $totalDrivers = Driver::count(); // Add this line
-        $totalEmployees = Employee::count(); // Add this line
+        $totalDrivers = Driver::count();
+        $totalEmployees = Employee::count();
 
         $vehicleStats = [
             'total' => Vehicle::count(),
             'active' => Vehicle::where('is_active', true)->count(),
             'offboarded' => Vehicle::where('is_active', false)->count()
+        ];
+
+        // Calculate fleet utilization
+        $vehiclesInUse = VehicleRequisition::whereIn('status', ['pending', 'approved'])
+            ->whereDate('requisition_date', '>=', now()->startOfDay())
+            ->distinct('employee_id')
+            ->count();
+        
+        $fleetUtilization = [
+            'vehicles_in_use' => $vehiclesInUse,
+            'utilization_rate' => $vehicleStats['active'] > 0 ? 
+                round(($vehiclesInUse / $vehicleStats['active']) * 100, 1) : 0,
+            'idle_vehicles' => $vehicleStats['active'] - $vehiclesInUse
+        ];
+
+        // Calculate inventory purchase stats instead of fuel stats
+        $lastMonth = now()->subMonth();
+        $currentMonth = now();
+        
+        $purchaseStats = [
+            'total_purchases' => Purchase::where('status', 'approved')->count(),
+            'recent_purchases' => Purchase::where('status', 'approved')
+                ->whereBetween('date', [$lastMonth, $currentMonth])
+                ->count(),
+            'total_amount' => Purchase::where('status', 'approved')->sum('total'),
+            'avg_order_value' => Purchase::where('status', 'approved')->avg('total') ?? 0
         ];
 
         return view('dashboard', [
@@ -99,9 +127,11 @@ class DashboardController extends Controller
             'totalStockIn' => $totalStockIn,
             'totalStockOut' => $totalStockOut,
             'data' => $data,
-            'totalDrivers' => $totalDrivers, // Add this line
-            'totalEmployees' => $totalEmployees, // Add this line
+            'totalDrivers' => $totalDrivers,
+            'totalEmployees' => $totalEmployees,
             'vehicleStats' => $vehicleStats,
+            'fleetUtilization' => $fleetUtilization,
+            'purchaseStats' => $purchaseStats,
         ]);
     }
 
