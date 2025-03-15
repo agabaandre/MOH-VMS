@@ -21,27 +21,47 @@ class EmployeeDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->editColumn('department', function ($query) {
-                return $query->department?->name ?? 'N/A';
-            })
-            ->filterColumn('department', function ($query, $keyword) {
+                return $query->department?->name;
+            })->filterColumn('department', function ($query, $keyword) {
                 $query->whereHas('department', function ($query) use ($keyword) {
                     $query->where('name', 'like', '%'.$keyword.'%');
                 });
-            })
-            ->orderColumn('department', function ($query, $order) {
+            })->orderColumn('department', function ($query, $order) {
                 $query->orderBy('department_id', $order);
             })
             ->editColumn('position', function ($query) {
-                return $query->position?->name ?? 'N/A';
-            })
-            ->filterColumn('position', function ($query, $keyword) {
+                return $query->position?->name;
+            })->filterColumn('position', function ($query, $keyword) {
                 $query->whereHas('position', function ($query) use ($keyword) {
                     $query->where('name', 'like', '%'.$keyword.'%');
                 });
-            })
-            ->orderColumn('position', function ($query, $order) {
+            })->orderColumn('position', function ($query, $order) {
                 $query->orderBy('position_id', $order);
             })
+            ->editColumn('facility', function ($query) {
+                return $query->facility?->name;
+            })->filterColumn('facility', function ($query, $keyword) {
+                $query->whereHas('facility', function ($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%');
+                });
+            })->orderColumn('facility', function ($query, $order) {
+                $query->orderBy('facility_id', $order);
+            })
+            ->editColumn('dob', function ($query) {
+                return $query->dob ? $query->dob->format('d-m-Y') : 'N/A';
+            })
+            ->editColumn('created_at', function ($query) {
+                return $query->created_at ? $query->created_at->format('d-m-Y H:i') : 'N/A';
+            })
+            ->editColumn('updated_at', function ($query) {
+                return $query->updated_at ? $query->updated_at->format('d-m-Y H:i') : 'N/A';
+            })
+            ->addColumn('avatar', function ($query) {
+                return $query->avatar_path 
+                    ? '<img src="'.$query->avatar_url.'" alt="'.$query->name.'" class="rounded-circle avatar-sm">' 
+                    : '<span class="avatar-sm rounded-circle bg-primary">'.\substr($query->name, 0, 1).'</span>';
+            })
+            ->rawColumns(['avatar'])
             ->setRowId('id')
             ->addIndexColumn();
     }
@@ -59,7 +79,8 @@ class EmployeeDataTable extends DataTable
         $join_date_from = $this->request()->get('join_date_from');
         $join_date_to = $this->request()->get('join_date_to');
 
-        $query = $model->newQuery();
+        // Add eager loading for relationships
+        $query = $model->newQuery()->with(['department', 'position', 'facility']);
 
         $query->when($department_id, function ($query) use ($department_id) {
             return $query->where('department_id', $department_id);
@@ -116,11 +137,28 @@ class EmployeeDataTable extends DataTable
     {
         return [
             Column::make('DT_RowIndex')->title(localize('SL'))->searchable(false)->orderable(false)->width(30)->addClass('text-center'),
+            Column::computed('avatar')->title(localize('Photo'))->orderable(false)->width(60)->addClass('text-center'),
+            Column::make('id')->title(localize('ID'))->defaultContent('N/A'),
+            Column::make('employee_code')->title(localize('Employee ID'))->defaultContent('N/A'),
             Column::make('name')->title(localize('Name'))->defaultContent('N/A'),
-            Column::make('nid')->title(localize('NID'))->defaultContent('N/A'),
             Column::make('department')->title(localize('Department'))->defaultContent('N/A'),
             Column::make('position')->title(localize('Designation'))->defaultContent('N/A'),
+            Column::make('facility')->title(localize('Facility'))->defaultContent('N/A'),
+            Column::make('nid')->title(localize('NID'))->defaultContent('N/A'),
+            Column::make('card_number')->title(localize('Card Number'))->defaultContent('N/A'),
             Column::make('phone')->title(localize('Phone'))->defaultContent('N/A'),
+            Column::make('email')->title(localize('Email'))->defaultContent('N/A'),
+            Column::make('dob')->title(localize('Date of Birth'))->defaultContent('N/A'),
+            Column::make('present_contact')->title(localize('Present Contact'))->defaultContent('N/A'),
+            Column::make('present_address')->title(localize('Present Address'))->defaultContent('N/A'),
+            Column::make('present_city')->title(localize('Present City'))->defaultContent('N/A'),
+            Column::make('contact_person_name')->title(localize('Contact Person'))->defaultContent('N/A'),
+            Column::make('contact_person_mobile')->title(localize('Contact Person Mobile'))->defaultContent('N/A'),
+            Column::make('reference_name')->title(localize('Reference Name'))->defaultContent('N/A'),
+            Column::make('reference_email')->title(localize('Reference Email'))->defaultContent('N/A'),
+            Column::make('reference_address')->title(localize('Reference Address'))->defaultContent('N/A'),
+            Column::make('created_at')->title(localize('Created At'))->defaultContent('N/A'),
+            Column::make('updated_at')->title(localize('Updated At'))->defaultContent('N/A'),
         ];
     }
 
