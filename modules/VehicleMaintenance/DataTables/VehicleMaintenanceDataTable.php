@@ -91,7 +91,7 @@ class VehicleMaintenanceDataTable extends DataTable
                 'responsive' => true,
                 'autoWidth' => false,
                 'headerCallback' => 'function(thead, data, start, end, display) {
-                    $(thead).addClass("table-success");
+                    $(thead).addClass("table-themed");
                 }',
                 'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
             ])

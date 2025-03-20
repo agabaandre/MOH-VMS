@@ -227,7 +227,7 @@ class DashboardController extends Controller
             'approved' => [
                 'name' => localize('Approved'),
                 'value' => 0,
-                'color' => '#17c653',
+                'color' => '#ffcc00',
             ],
             'rejected' => [
                 'name' => localize('Rejected'),

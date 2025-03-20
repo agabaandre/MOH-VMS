@@ -2062,7 +2062,7 @@ progress {
 
 .table-success {
     /* --bs-table-bg: #d1e7dd; */
-    --bs-table-bg: #17c653;
+    --bs-table-bg: #ffcc00;
     --bs-table-striped-bg: #c7dbd2;
     --bs-table-striped-color: #000;
     --bs-table-active-bg: #bcd0c7;
@@ -3093,8 +3093,8 @@ fieldset:disabled .btn {
 
 .btn-success {
     color: #fff;
-    background-color: #17c653;
-    border-color: #17c653;
+    background-color: #ffcc00;
+    border-color: #ffcc00;
 }
 .btn-success:hover {
     color: #fff;
@@ -3127,8 +3127,8 @@ fieldset:disabled .btn {
 .btn-success:disabled,
 .btn-success.disabled {
     color: #fff;
-    background-color: #17c653;
-    border-color: #17c653;
+    background-color: #ffcc00;
+    border-color: #ffcc00;
 }
 
 .btn-info {
@@ -7546,7 +7546,7 @@ fieldset:disabled .btn {
 
 .bg-success {
     /* background-color: #198754 !important; */
-    background-color: #17c653 !important;
+    background-color: #ffcc00 !important;
 }
 
 .bg-info {
