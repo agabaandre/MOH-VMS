@@ -32,11 +32,11 @@
                 </div>
 
                 <div class="form-group row my-2">
-                    <label for="emp_nid" class="col-sm-5 col-form-label">@localize('NID') <i
+                    <label for="emp_nid" class="col-sm-5 col-form-label">@localize('NIN') <i
                             class="text-danger">*</i></label>
                     <div class="col-sm-7">
                         <input name="nid" required="" class="form-control" type="number"
-                            placeholder="@localize('Employee NID')" id="emp_nid"
+                            placeholder="@localize('Employee NIN')" id="emp_nid"
                             value="{{ isset($item) ? $item->nid : old('nid') }}">
                     </div>
                 </div>

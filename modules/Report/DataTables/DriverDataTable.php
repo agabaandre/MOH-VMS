@@ -123,7 +123,7 @@ class DriverDataTable extends DataTable
             Column::make('license_issue_date')->title(localize('License Issue Date'))->defaultContent('N/A'),
             Column::make('license_expiry_date')->title(localize('License Expiry Date'))->defaultContent('N/A'),
             Column::make('authorization_code')->title(localize('Authorization Code'))->defaultContent('N/A'),
-            Column::make('nid')->title(localize('NID'))->defaultContent('N/A'),
+            Column::make('nid')->title(localize('NIN'))->defaultContent('N/A'),
             Column::make('dob')->title(localize('Date of Birth'))->defaultContent('N/A'),
             Column::make('joining_date')->title(localize('Joining Date'))->defaultContent('N/A'),
             Column::make('working_time_slot')->title(localize('Working Time'))->defaultContent('N/A'),
