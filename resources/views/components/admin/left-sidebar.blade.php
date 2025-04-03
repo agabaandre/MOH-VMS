@@ -6,14 +6,14 @@
     </div>
 
     <!--/.sidebar header-->
-    <div class=" sidebar_user_profile d-flex justify-start align-items-center p-3 bg-light my-2">
+    {{-- <div class=" sidebar_user_profile d-flex justify-start align-items-center p-3 bg-light my-2">
         <div class="user_img me-2">
             <img src="{{ auth()->user()->profile_photo_url }}">
         </div>
         <div>
             <p class="mb-0 fw-bold fs-18">{{ auth()->user()->name }}</p>
         </div>
-    </div>
+    </div> --}}
     <!--/.sidebar header-->
     <div class="sidebar-body">
         <nav class="sidebar-nav">

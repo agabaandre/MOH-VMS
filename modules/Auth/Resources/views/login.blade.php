@@ -60,7 +60,7 @@
                     </div>
                 @endif
             </div>
-            <button type="submit" class="btn signin-btn w-100">{{ localize('Sign In') }}</button>
+            <button type="submit" class="btn signin-btn w-100" style="background-color: #ffcc00; color: #000000; border: none; outline: none;">{{ localize('Sign In') }}</button>
         </form>
 
 
